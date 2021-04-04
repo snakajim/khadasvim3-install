@@ -27,3 +27,8 @@ sudo apt-cache policy docker-ce
 #sudo apt-get install docker-ce= docker-ce-cli= containerd.io
 #sudo apt install -y --no-install-recommends docker-ce
 
+#
+#before run
+#
+gpasswd -a $USER docker
+chmod 666 /var/run/docker.sock
