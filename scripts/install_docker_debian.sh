@@ -6,9 +6,10 @@
 # remove old versions
 sudo dpkg --remove --force-remove-reinstreq docker-ce docker-ce-rootless-extras
 sudo apt-get remove docker docker-engine docker.io containerd runc
+sudo apt -y autoremove
 
 # set environment
-sudo apt install \
+sudo apt install -y\
     apt-transport-https \
     ca-certificates \
     curl \
@@ -24,7 +25,10 @@ sudo apt-cache policy docker-ce
 #
 #install docker-ce
 #
-#sudo apt-get install docker-ce= docker-ce-cli= containerd.io
+#sudo apt-get install -y docker-ce=5:19.03.15~3-0~debian-buster docker-ce-cli=5:19.03.15~3-0~debian-buster containerd.io
+#sudo apt-get install -y docker-ce=5:18.09.9~3-0~debian-buster docker-ce-cli=5:18.09.9~3-0~debian-buster containerd.io
+#sudo apt-get install -y docker-ce= docker-ce-cli= containerd.io
+sudo apt-get install -y --no-install-recommends docker-ce docker-ce-cli containerd.io
 #sudo apt install -y --no-install-recommends docker-ce
 
 #
@@ -32,3 +36,11 @@ sudo apt-cache policy docker-ce
 #
 sudo gpasswd -a $USER docker
 sudo chmod 666 /var/run/docker.sock
+
+#
+# test run
+#
+docker -v
+sudo systemctl start docker
+docker images 
+docker run hello-world
