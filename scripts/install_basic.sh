@@ -9,7 +9,6 @@
 # $> sudo dpkg-reconfigure keyboard-configuration
 #
 apt-get update -y
-apt-get upgrade -y
 iam=`echo ${USER}`
 if [ $iam != "root" ]; then
   echo "i am not root, please exec me in root."
