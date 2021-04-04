@@ -57,6 +57,12 @@ systemctl set-default multi-user.target
 #systemctl set-default graphical.target
 sleep 10
 
+# Enable VNC remote access from Host. 
+#    GUI remote connect via VNC 
+#
+sudo apt-get install -y xrdp task-gnome-desktop # remote desktop conenct is recommended.
+sudo apt-get install solaar solaar-gnome3
+sudo service xrdp restart
 
 # Change sshd_config file
 # SSH poicy is as root login.
