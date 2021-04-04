@@ -8,6 +8,7 @@
 # make sure you have set your keyboard. 
 # $> sudo dpkg-reconfigure keyboard-configuration
 #
+apt-get update -y
 apt-get upgrade -y
 iam=`echo ${USER}`
 if [ $iam != "root" ]; then
@@ -27,6 +28,7 @@ apt-get install -y avahi-daemon avahi-utils
 apt-get install -y scons libomp-dev evince time hwinfo
 apt-get install -y gcc-7 g++-7
 apt-get install -y gcc-8 g++-8
+
 #gpasswd -a $USER docker
 #chmod 666 /var/run/docker.sock
 sleep 10
