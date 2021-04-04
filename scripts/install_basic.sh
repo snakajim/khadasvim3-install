@@ -60,16 +60,19 @@ sleep 10
 # Enable VNC remote access from Host. 
 #    GUI remote connect via VNC 
 #
-sudo apt-get install -y xrdp task-gnome-desktop # remote desktop conenct is recommended.
-sudo apt-get install -y solaar solaar-gnome3
-sudo service xrdp restart
+apt-get install -y task-gnome-desktop # remote desktop conenct is recommended.
+apt-get install -y xrdp 
+apt-get install -y solaar solaar-gnome3
+systemctl start xrdp
+systemctl enable xrdp
+service xrdp restart
 
 # Change sshd_config file
 # SSH poicy is as root login.
 #
 sed -i 's/^#PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config
 sed -i 's/^#X11DisplayOffset 10/X11DisplayOffset 10/' /etc/ssh/sshd_config
-sed -i 's/^#PasswordAuthentification yes/PasswordAuthentification no/' /etc/ssh/sshd_config
+sed -i 's/^#PasswordAuthentication yes/PasswordAuthentication no/' /etc/ssh/sshd_config
 sed -i 's/^#PermitEmptyPasswords no/PermitEmptyPasswords yes/' /etc/ssh/sshd_config
 systemctl restart sshd
 sleep 10
@@ -81,9 +84,10 @@ sleep 10
 grep user0 /etc/passwd
 ret=$?
 if [ $ret -eq 1 ]; then
-  useradd -m user0 && passwd -d user0
+  useradd -m user0 
+  passwd  -d user0
   gpasswd -a user0 wheel
-  #gpasswd -a user0 docker
+  gpasswd -a user0 docker
   gpasswd -a user0 sudo
   chsh -s /bin/bash user0
   echo "# Privilege specification for user0" >> /etc/sudoers
