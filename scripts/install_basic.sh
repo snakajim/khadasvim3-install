@@ -15,7 +15,8 @@ if [ $iam != "root" ]; then
   exit
 fi
 apt-get install -y default-jre default-jdk
-apt-get install -y curl cmake ninja-build z3 sudo firewalld
+apt-get install -y curl cmake ninja-build z3 sudo
+apt-get install -y firewalld
 apt-get install -y autoconf flex bison apt-utils
 apt-get install -y python3 python3-dev python3-pip
 apt-get install -y openssh-server x11-apps at
@@ -26,8 +27,8 @@ apt-get install -y avahi-daemon firewalld avahi-utils
 apt-get install -y scons libomp-dev evince time hwinfo
 apt-get install -y gcc-7 g++-7
 apt-get install -y gcc-8 g++-8
-gpasswd -a $USER docker
-chmod 666 /var/run/docker.sock
+#gpasswd -a $USER docker
+#chmod 666 /var/run/docker.sock
 sleep 10
 #
 # addgroup wheel and grant sudo authority
@@ -42,10 +43,13 @@ sed -i -E \
 systemctl start  avahi-daemon
 systemctl enable avahi-daemon
 sleep 10
-firewall-cmd --add-service=mdns  --permanent
-firewall-cmd --reload
-systemctl daemon-reload
-sleep 10
+
+#systemctl start firewalld
+#systemctl enable firewalld
+#firewall-cmd --add-service=mdns  --permanent
+#firewall-cmd --reload
+#systemctl daemon-reload
+#sleep 10
 
 # set CLI as default
 systemctl set-default multi-user.target
@@ -77,7 +81,11 @@ if [ $ret -eq 1 ]; then
   echo "user0    ALL=NOPASSWD: ALL" >> /etc/sudoers
 fi
 mkdir -p /home/user0/tmp && mkdir -p /home/user0/work && mkdir -p /home/user0/.ssh
-touch /home/user0/.ssh/authorized_keys
+if [ -f /home/user0/.ssh/authorized_keys ]; then
+  echo "autholized_keys exists."
+else
+  touch /home/user0/.ssh/authorized_keys
+fi
 chown -R user0:user0 /home/user0
 apt-get autoremove -y
 apt-get clean
