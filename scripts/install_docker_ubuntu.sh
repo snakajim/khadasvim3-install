@@ -1,7 +1,7 @@
 #!/bin/bash
-# This script is only tested in Aarch64 Debian 5.x
+# This script is only tested in Aarch64 Ubuntu 20
 #
-# install docker infrastructure on aarch64 debian 5.x
+# install docker infrastructure on aarch64 Ubuntu 20puri
 
 # remove old versions
 sudo dpkg --remove --force-remove-reinstreq docker-ce docker-ce-rootless-extras
