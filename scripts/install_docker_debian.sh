@@ -30,5 +30,5 @@ sudo apt-cache policy docker-ce
 #
 #before run
 #
-gpasswd -a $USER docker
-chmod 666 /var/run/docker.sock
+sudo gpasswd -a $USER docker
+sudo chmod 666 /var/run/docker.sock

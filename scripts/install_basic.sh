@@ -61,7 +61,7 @@ sleep 10
 #    GUI remote connect via VNC 
 #
 sudo apt-get install -y xrdp task-gnome-desktop # remote desktop conenct is recommended.
-sudo apt-get install solaar solaar-gnome3
+sudo apt-get install -y solaar solaar-gnome3
 sudo service xrdp restart
 
 # Change sshd_config file
@@ -83,7 +83,7 @@ ret=$?
 if [ $ret -eq 1 ]; then
   useradd -m user0 && passwd -d user0
   gpasswd -a user0 wheel
-  gpasswd -a user0 docker
+  #gpasswd -a user0 docker
   gpasswd -a user0 sudo
   chsh -s /bin/bash user0
   echo "# Privilege specification for user0" >> /etc/sudoers
