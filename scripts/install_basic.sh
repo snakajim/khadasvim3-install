@@ -64,8 +64,9 @@ sleep 10
 # Enable VNC remote access from Host. 
 #    GUI remote connect via VNC 
 #
-apt-get install -y task-gnome-desktop # remote desktop conenct is recommended.
-apt-get install -y xrdp 
+#apt-get install -y task-gnome-desktop # remote desktop conenct is recommended.
+apt-get install -y xrdp
+# wireless mouse setting 
 apt-get install -y solaar solaar-gnome3
 systemctl start xrdp
 systemctl enable xrdp
