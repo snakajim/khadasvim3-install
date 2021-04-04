@@ -16,14 +16,14 @@ if [ $iam != "root" ]; then
 fi
 apt-get install -y default-jre default-jdk
 apt-get install -y curl cmake ninja-build z3 sudo
-apt-get install -y firewalld
+#apt-get install -y firewalld
 apt-get install -y autoconf flex bison apt-utils
 apt-get install -y python3 python3-dev python3-pip
 apt-get install -y openssh-server x11-apps at
 apt-get install -y xserver-xorg xterm telnet
 apt-get install -y unzip htop gettext aria2
 apt-get install -y locales-all cpanminus
-apt-get install -y avahi-daemon firewalld avahi-utils
+apt-get install -y avahi-daemon avahi-utils
 apt-get install -y scons libomp-dev evince time hwinfo
 apt-get install -y gcc-7 g++-7
 apt-get install -y gcc-8 g++-8
@@ -62,6 +62,7 @@ sleep 10
 #
 sed -i 's/^#PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config
 sed -i 's/^#X11DisplayOffset 10/X11DisplayOffset 10/' /etc/ssh/sshd_config
+sed -i 's/^#PermitEmptyPasswords no/PermitEmptyPasswords yes/' /etc/ssh/sshd_config
 systemctl restart sshd
 sleep 10
 
