@@ -19,7 +19,7 @@ apt-get install -y curl cmake ninja-build z3 sudo
 apt-get install -y firewalld
 apt-get install -y autoconf flex bison apt-utils
 apt-get install -y python3 python3-dev python3-pip
-apt-get install -y openssh-server x11-apps at
+apt-get install -y x11-apps at
 apt-get install -y xserver-xorg xterm telnet
 apt-get install -y unzip htop gettext aria2
 apt-get install -y locales-all cpanminus
@@ -35,8 +35,12 @@ sleep 10
 # addgroup wheel and grant sudo authority
 #
 addgroup wheel
+gpasswd -a khadas wheel
+gpasswd -a khadas sudo
+echo "# Privilege specification for khadas" >> /etc/sudoers
+echo "khadas    ALL=NOPASSWD: ALL" >> /etc/sudoers
 sed -i -E \
-  's/\#\s+auth\s+required\s+pam_wheel\.so$/auth      required      pam_wheel\.so/' \
+  's/\#\s+auth\s+required\s+pam_wheel\.so$/auth      required      pam_wheel\.so group=wheel/' \
   /etc/pam.d/su
 
 
@@ -68,7 +72,7 @@ systemctl enable xrdp
 service xrdp restart
 
 # Change sshd_config file
-# SSH poicy is as root login.
+# SSH policy is as root login.
 #
 sed -i 's/^#PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config
 sed -i 's/^#X11DisplayOffset 10/X11DisplayOffset 10/' /etc/ssh/sshd_config
