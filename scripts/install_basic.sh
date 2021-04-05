@@ -1,5 +1,5 @@
 #!/bin/bash
-# This script is only tested in Aarch64 & x86_64 Ubuntu 20.04 LTS
+# This script is only tested in Aarch64 & x86_64 Ubuntu LK 4.9
 # How to run:
 # $> chmod +x * && sudo sh -c ./install_basic.sh
 #
@@ -67,7 +67,7 @@ sleep 10
 #apt-get install -y task-gnome-desktop # remote desktop conenct is recommended.
 apt-get install -y xrdp
 # wireless mouse setting 
-apt-get install -y solaar solaar-gnome3
+#apt-get install -y solaar solaar-gnome3
 systemctl start xrdp
 systemctl enable xrdp
 service xrdp restart
