@@ -1,5 +1,5 @@
 #!/bin/bash
-# This script is only tested in Aarch64 & x86_64 Ubuntu LK 4.9
+# This script is only tested in Aarch64 Ubuntu 20 LK 4.9
 # How to run:
 # $> chmod +x * && sudo sh -c ./install_basic.sh
 #
@@ -14,6 +14,23 @@ if [ $iam != "root" ]; then
   echo "i am not root, please exec me in root."
   exit
 fi
+
+# ---------------------------
+# Confirm which OS you are in 
+# ---------------------------
+if [ -e "/etc/lsb-release" ]; then
+  OSNOW=UBUNTU
+  echo "RUN" && echo "OS $OSNOW is set"
+elif [ -e "/etc/redhat-release" ]; then
+  OSNOW=CENTOS
+  echo "RUN" && echo "OS $OSNOW is set"
+elif [ -e "/etc/os-release" ]; then
+  OSNOW=DEBIAN
+  echo "RUN" && echo "OS $OSNOW is set"
+else
+  echo "RUN" && echo "OS should be one of UBUNTU, CENTOS or DEBIAN, stop..."
+fi
+
 apt-get install -y default-jre default-jdk
 apt-get install -y curl cmake ninja-build z3 sudo
 apt-get install -y firewalld
@@ -81,6 +98,49 @@ sed -i 's/^#PasswordAuthentication yes/PasswordAuthentication yes/' /etc/ssh/ssh
 sed -i 's/^#PermitEmptyPasswords no/PermitEmptyPasswords yes/' /etc/ssh/sshd_config
 systemctl restart sshd
 sleep 10
+
+#
+# setup docker
+#
+if [ $OSNOW = "UBUNTU" ] ; then
+  # remove old versions
+  dpkg --remove --force-remove-reinstreq docker-ce docker-ce-rootless-extras
+  apt-get remove docker docker-engine docker.io containerd runc
+  apt -y autoremove
+
+  # set environment
+  apt-get install -y apt-transport-https ca-certificates curl software-properties-common
+  curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+  add-apt-repository \
+	"deb [arch=arm64] https://download.docker.com/linux/ubuntu \
+	$(lsb_release -cs) \
+	stable"
+  apt update
+  apt-cache policy docker-ce
+
+  #
+  #install docker-ce
+  #
+  #sudo apt-get install -y docker-ce=5:19.03.15~3-0~debian-buster docker-ce-cli=5:19.03.15~3-0~debian-buster containerd.io
+  #sudo apt-get install -y docker-ce=5:18.09.9~3-0~debian-buster docker-ce-cli=5:18.09.9~3-0~debian-buster containerd.io
+  #sudo apt-get install -y docker-ce= docker-ce-cli= containerd.io
+  apt-get install -y --no-install-recommends docker-ce docker-ce-cli containerd.io
+  #sudo apt install -y --no-install-recommends docker-ce
+
+  #
+  #before run
+  #
+  gpasswd -a $USER docker
+  chmod 666 /var/run/docker.sock
+
+  #
+  # test run  
+  #
+  docker -v
+  systemctl start docker
+  docker images 
+  docker run hello-world
+fi
 
 
 # add "user0" without passward.
