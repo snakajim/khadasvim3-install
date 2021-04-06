@@ -90,7 +90,10 @@ grep user0 /etc/passwd
 ret=$?
 if [ $ret -eq 1 ]; then
   useradd -m user0 
+  # enable empty passwd for user0
   passwd  -d user0
+  #sed -i 's/#PasswordRequired=false/PasswordRequired=false/' /etc/gdm/gdm.conf
+  sed -i 's/nullok_secure/nullok/' /etc/pam.d/common-auth
   gpasswd -a user0 wheel
   gpasswd -a user0 docker
   gpasswd -a user0 sudo
@@ -118,6 +121,7 @@ ret=$?
 if [ $ret -eq 0 ]; then
   echo "Khadas is detected."
   hostnamectl set-hostname Khadasarmkk
+  sed -i 's/ Khadas/ Khadasarmkk/' /etc/hosts
   sleep 10
 fi
 #
