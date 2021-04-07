@@ -12,6 +12,6 @@
 # $> docker run --rm -t ubuntu:18.04_test uname -m
 # aarch64
 #
-FROM multiarch/qemu-user-static:x86_64-aarch64 as qemu
+FROM multiarch/qemu-user-static:aarch64-x86_64 as qemu
 FROM ubuntu:18.04
 COPY --from=qemu /usr/bin/qemu-x86_64-static /usr/bin
