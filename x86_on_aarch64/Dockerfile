@@ -1,5 +1,5 @@
 # 2020-Jan-23 snakajim@arm.com
-# Used for building x86-64/ubuntu:18.04 container
+# Used for building x86_64/ubuntu:18.04 container
 #
 # 1. Preparation
 # Save this "Dockerfile" in your current working directry then,
@@ -12,6 +12,6 @@
 # $> docker run --rm -t ubuntu:18.04_test uname -m
 # aarch64
 #
-FROM multiarch/qemu-user-static:aarch64-x86_64 as qemu
+FROM multiarch/qemu-user-static:x86_64-aarch64 as qemu
 FROM ubuntu:18.04
-COPY --from=qemu /usr/bin/qemu-aarch64-static /usr/bin
+COPY --from=qemu /usr/bin/qemu-x86_64-static /usr/bin
