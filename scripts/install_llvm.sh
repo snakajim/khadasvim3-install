@@ -13,8 +13,8 @@ CPU=`nproc --all`
 # -----------
 sudo apt install -y aptitude
 MAX_SPEED=`grep MAX_SPEED /etc/default/cpufrequtils | sed -e 's/MAX_SPEED=//'`
-if [ $MAX_SPEED -gt 1200000 ]; then 
-  sudo perl -pi -e 's/MAX_SPEED=\d+/MAX_SPEED=1200000/' /etc/default/cpufrequtils
+if [ $MAX_SPEED -gt 900000 ]; then 
+  sudo perl -pi -e 's/MAX_SPEED=\d+/MAX_SPEED=900000/' /etc/default/cpufrequtils
   echo "/etc/default/cpufrequtils MAX_SPEED is changed, reboot in 10sec"
   sleep 10
   sudo reboot
