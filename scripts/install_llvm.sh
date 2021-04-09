@@ -12,6 +12,8 @@ CPU=`nproc --all`
 # otherwize compile will stop during process.
 # -----------
 sudo apt install -y aptitude
+sudo apt install -y lm-sensors hardinfo
+#watch -n 10 cat /sys/class/thermal/thermal_zone*/temp
 MAX_SPEED=`grep MAX_SPEED /etc/default/cpufrequtils | sed -e 's/MAX_SPEED=//'`
 if [ $MAX_SPEED -gt 900000 ]; then 
   sudo perl -pi -e 's/MAX_SPEED=\d+/MAX_SPEED=900000/' /etc/default/cpufrequtils
@@ -67,9 +69,8 @@ fi
 # install LLVM 1110
 #
 cd ${HOME}/tmp && rm -rf llvm*
-cd ${HOME}/tmp && aria2c -x10 https://github.com/llvm/llvm-project/releases/download/llvmorg-11.1.0/llvm-project-11.1.0.src.tar.xz
-unxz llvm-project-11.1.0.src.tar.xz && tar xf llvm-project-11.1.0.src.tar && \
-  cd llvm-project-11.1.0.src && mkdir -p build && cd build
+cd ${HOME}/tmp && git clone --depth 1 https://github.com/llvm/llvm-project.git -b llvmorg-11.1.0 && \
+  cd llvm-project && mkdir -p build && cd build
 echo "start LLVM1110 build"
 date
 if [ $OSNOW = "UBUNTU" ] ||  [ $OSNOW = "DEBIAN" ]; then 
