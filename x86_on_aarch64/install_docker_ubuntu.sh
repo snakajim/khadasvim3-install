@@ -63,7 +63,7 @@ docker pull amd64/ubuntu
 docker pull arm64v8/ubuntu
 # test
 docker system prune -f
-docker run --rm --privileged aptman/qus -s -- -p amd64
+#docker run --rm --privileged aptman/qus -s -- -p amd64
 echo `docker run --rm -t amd64/ubuntu uname -m` | grep x86_64
 echo `docker run --rm -t arm64v8/ubuntu uname -m` | grep aarch64
 
@@ -73,6 +73,6 @@ echo `docker run --rm -t arm64v8/ubuntu uname -m` | grep aarch64
 # -----------
 sudo apt install subversion -y
 cd ${HOME}/work && svn export  https://github.com/ARM-software/Tool-Solutions/trunk/docker/tensorflow-lite-micro-rtos-fvp
-sed -i 's/FROM ubuntu/FROM amd64\/ubuntu/' ${HOME}/work/tensorflow-lite-micro-rtos-fvp/docker/*.Dockerfile
+sed -i 's/FROM ubuntu:/FROM amd64\/ubuntu:/' ${HOME}/work/tensorflow-lite-micro-rtos-fvp/docker/*.Dockerfile
 cd ${HOME}/work/tensorflow-lite-micro-rtos-fvp && chmod +x -R * && ./docker_build.sh -c gcc
 
