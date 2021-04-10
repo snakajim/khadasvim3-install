@@ -72,6 +72,9 @@ docker pull multiarch/ubuntu-core:arm64v8-xenial
 # Ubuntu 18.04 LTS
 docker pull multiarch/ubuntu-core:amd64-bionic
 docker pull multiarch/ubuntu-core:arm64v8-bionic
+# Ubuntu 20.04 LTS
+docker pull multiarch/ubuntu-core:amd64-focal
+docker pull multiarch/ubuntu-core:arm64v8-focal
 # test
 docker system prune -f
 echo `docker run --rm -t amd64/ubuntu uname -m` | grep x86_64
@@ -86,6 +89,7 @@ sudo apt install subversion -y
 cd ${HOME}/work && svn export  https://github.com/ARM-software/Tool-Solutions/trunk/docker/tensorflow-lite-micro-rtos-fvp
 # use Ubuntu 16.04 LTS(xenial) instead to avoid libc-bin issue
 sed -i 's/FROM ubuntu:18.04/FROM multiarch\/ubuntu-core:amd64-xenial/' ${HOME}/work/tensorflow-lite-micro-rtos-fvp/docker/*.Dockerfile
+sed -i 's/apt-get -y update/apt-get -y update \&\& apt-get install -y software-properties-common \&\& apt-get -y upgrade/' ${HOME}/work/tensorflow-lite-micro-rtos-fvp/docker/*.Dockerfile 
 #sed -i 's/FROM ubuntu:18.04/FROM multiarch\/ubuntu-core:amd64-bionic/' ${HOME}/work/tensorflow-lite-micro-rtos-fvp/docker/*.Dockerfile
 chmod +x -R ${HOME}/work/tensorflow-lite-micro-rtos-fvp/*
 cd ${HOME}/work/tensorflow-lite-micro-rtos-fvp && ./docker_build.sh -c gcc
