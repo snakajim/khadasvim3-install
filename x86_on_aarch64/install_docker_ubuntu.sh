@@ -5,6 +5,8 @@
 # Install docker infrastructure to run x86 container on aarch64
 #
 
+pushd ./
+
 # -------------------------------------
 # remove old docker versions
 # -------------------------------------
@@ -92,5 +94,6 @@ sed -i 's/FROM ubuntu:18.04/FROM multiarch\/ubuntu-core:amd64-xenial/' ${HOME}/w
 sed -i 's/apt-get -y update/apt-get -y update \&\& apt-get install -y software-properties-common \&\& apt-get -y upgrade/' ${HOME}/work/tensorflow-lite-micro-rtos-fvp/docker/*.Dockerfile 
 #sed -i 's/FROM ubuntu:18.04/FROM multiarch\/ubuntu-core:amd64-bionic/' ${HOME}/work/tensorflow-lite-micro-rtos-fvp/docker/*.Dockerfile
 chmod +x -R ${HOME}/work/tensorflow-lite-micro-rtos-fvp/*
+popd && cp ../amd64_bin/xxd ${HOME}/work/tensorflow-lite-micro-rtos-fvp
 cd ${HOME}/work/tensorflow-lite-micro-rtos-fvp && ./docker_build.sh -c gcc
 
