@@ -8,15 +8,15 @@
 CPU=`nproc --all`
 
 # -----------
-# reduce MAX_SPEED down to 1.2GHz, 
+# reduce MAX_SPEED down to 1.0GHz, 
 # otherwize compile will stop during process.
 # -----------
 sudo apt install -y aptitude
 sudo apt install -y lm-sensors hardinfo
 #watch -n 10 cat /sys/class/thermal/thermal_zone*/temp
 MAX_SPEED=`grep MAX_SPEED /etc/default/cpufrequtils | sed -e 's/MAX_SPEED=//'`
-if [ $MAX_SPEED -gt 900000 ]; then 
-  sudo perl -pi -e 's/MAX_SPEED=\d+/MAX_SPEED=900000/' /etc/default/cpufrequtils
+if [ $MAX_SPEED -gt 1000000 ]; then 
+  sudo perl -pi -e 's/MAX_SPEED=\d+/MAX_SPEED=1000000/' /etc/default/cpufrequtils
   echo "/etc/default/cpufrequtils MAX_SPEED is changed, reboot in 10sec"
   sleep 10
   sudo reboot
@@ -69,7 +69,7 @@ fi
 # install LLVM 1110
 #
 cd ${HOME}/tmp && rm -rf llvm*
-cd ${HOME}/tmp && git clone --depth 1 https://github.com/llvm/llvm-project.git -b llvmorg-11.1.0 && \
+cd ${HOME}/tmp && git clone --depth 1 https://github.com/llvm/llvm-project.git -b llvmorg-11.0.1 && \
   cd llvm-project && mkdir -p build && cd build
 echo "start LLVM1110 build"
 date
