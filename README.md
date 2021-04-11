@@ -66,20 +66,18 @@ Similar mechanism is given by docker multuiarch, however it has known issue in l
 
 - https://hub.docker.com/r/multiarch/qemu-user-static
 
-If you are not using Ubuntu repository to install qemu-user-static, you can compile and install qemu-user-static.
-
-Prepare your environment.
+If you don't like to use Ubuntu repository to apt install qemu-user-static, you can compile from source. Setup your build environment first,
 
 ```
-$ sudo apt install -y pkg-config
-$ sudo apt install -y libglib2.0-0
-$ sudo apt install -y libglib2.0-dev
-$ git clone git://git.qemu.org/qemu.git
-$ cd qemu
-$ git submodule update --init --recursive
+sudo apt install -y pkg-config
+sudo apt install -y libglib2.0-0
+sudo apt install -y libglib2.0-dev
+git clone git://git.qemu.org/qemu.git
+cd qemu
+git submodule update --init --recursive
 ```
 
-Then configure qemu with --static, --disable-system, and --enable-linux-user.
+Then configure/build/install qemu with --static, --disable-system, and --enable-linux-user.
 
 ```
 $ CPU=`nproc --all`
@@ -91,13 +89,13 @@ $ cd ${HOME}/tmp/qemu-user-static/bin
 $ for i in qemu-*; do mv $i $i-static; done
 ```
 
-Make sure you have a set of qemu-<architecture>-static under ${HOME}/tmp. To let docer refer qemu-<architecture>-static, copy these binary fiels under /usr/bin.
+Make sure you have a set of qemu-<architecture>-static under ${HOME}/tmp. To let docker refer qemu-<architecture>-static, copy these binary fiels under /usr/bin.
 
 ```
 $ sudo cp ${HOME}/tmp/qemu-user-static/bin/qemu-*-static /usr/bin
 $ sudo chmod +x /usr/bin/qemu-*-static
 ```
-## 1. Test your multiarch docker container
+## 1. Test your multiarch container on aarch64
 
 If you set dbhi-qus properly, this test should pass.
 
@@ -106,19 +104,22 @@ docker system prune -f
 docker run --rm -t multiarch/ubuntu-core:amd64-bionic uname -m
 ```
 
-Return x86_64. 
+Return is x86_64. You can set various ISA type by switching ***-p [TARGET_ARCH]***.
 
-If you would like to test aarch64 on x86_64, you need to swith ***-p aarch64*** in aptman/qus argument.
+If you would like to test aarch64 on x86_64 platform, you can do similar way, swithing ***-p aarch64*** in aptman/qus argument.
 
 ```
+sudo apt install -y qemu-user-static
 docker run --rm --privileged aptman/qus -- -r
 docker run --rm --privileged aptman/qus -s -- -p aarch64
 docker system prune -f
 docker run --rm -t multiarch/ubuntu-core:arm64-bionic uname -m
 ```
 
+Return is aarch64.
+
 The points are,
 
-- You need to switch ***-p [TARGET_ARCH]*** everytime when you change ISA type in docker container. 
-- You need to use multiarch/ubuntu-core docker image to build your image, the normal image does not work.
+- You need to switch ***-p [TARGET_ARCH]*** everytime when you change ISA type of docker container. 
+- You need to use [Multiarch](https://hub.docker.com/u/multiarch/) image to build your own container, the normal image does not work. 
 
