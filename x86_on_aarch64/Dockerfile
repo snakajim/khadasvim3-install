@@ -1,17 +1,32 @@
-# 2020-Jan-23 snakajim@arm.com
-# Used for building x86_64/ubuntu:18.04 container
+# 2021-Apr-11 snakajim@arm.com
 #
-# 1. Preparation
-# Save this "Dockerfile" in your current working directry then,
-# $> docker run --rm --privileged multiarch/qemu-user-static:register --reset
+# Example Dockerfile to test multiarch.
 #
-# 2. Build 
-# $> docker build --rm -t ubuntu:18.04_test .
+# -------------------------------------
+# Dynamic Binary Hardware Injection (DBHI) qemu-user-static (qus)
+# https://github.com/dbhi/qus
 #
-# 3. Run container for testing
-# $> docker run --rm -t ubuntu:18.04_test uname -m
-# aarch64
+# This is alternative way to emulate x86_64 on aarch64. 
+# If docker multiarch does not work properly, use this instead. 
+# -------------------------------------
+# BEFORE YOU BUILD,
+# sudo apt install -y qemu-user-static
+# docker run --rm --privileged aptman/qus -- -r
+# docker run --rm --privileged aptman/qus -s -- -p x86_64
+# -------------------------------------
+# To build
+# $> docker build --rm -t test .
+# To test
+# $> docker run --rm -it test uname -m
 #
-FROM multiarch/qemu-user-static:aarch64-x86_64 as qemu
-FROM ubuntu:18.04
-COPY --from=qemu /usr/bin/qemu-x86_64-static /usr/bin
+
+FROM multiarch/ubuntu-core:amd64-bionic
+SHELL ["/bin/bash", "-c"]
+RUN apt-get -y update && apt-get -y upgrade && && \
+  apt-get install -y build-essential software-properties-common
+RUN apt-get -y install --no-install-recommends \
+    sudo git wget make gcc curl \
+    zip unzip libatomic1 ca-certificates \
+    xxd imagemagick \
+    python3 python3-venv python3-dev python3-pip
+RUN rm -rf /var/lib/apt/lists/*
