@@ -18,6 +18,9 @@
 # $> docker build --rm -t test .
 # To test
 # $> docker run --rm -it test uname -m
+# To run
+# $> docker pull nsatoshi/tensorflow-lite-micro-rtos-fvp:gcc 
+# $> docker run -it --name eda -u user1 --privileged --restart=always -d --net host nsatoshi/tensorflow-lite-micro-rtos-fvp:gcc sh
 #
 
 FROM multiarch/ubuntu-core:amd64-bionic
@@ -30,3 +33,4 @@ RUN apt-get -y install --no-install-recommends \
     xxd imagemagick \
     python3 python3-venv python3-dev python3-pip
 RUN rm -rf /var/lib/apt/lists/*
+
