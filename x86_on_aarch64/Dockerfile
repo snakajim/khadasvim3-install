@@ -19,8 +19,10 @@
 # To test
 # $> docker run --rm -it test:x86_64 uname -m
 # To run
+# $> docker run --rm -it -u user0 test:x86_64 /bin/bash
+# To test another docker image
 # $> docker pull nsatoshi/tensorflow-lite-micro-rtos-fvp:gcc 
-# $> docker run -it --name eda -u user1 --privileged --restart=always -d --net host nsatoshi/tensorflow-lite-micro-rtos-fvp:gcc sh
+# $> docker run -it --name eda -u user1 --privileged --restart=always -d --net host nsatoshi/tensorflow-lite-micro-rtos-fvp:gcc /bin/bash
 #
 
 FROM multiarch/ubuntu-core:amd64-bionic
@@ -43,9 +45,10 @@ RUN sed -i -E \
   's/\#\s+auth\s+required\s+pam_wheel\.so$/auth      required      pam_wheel\.so group=wheel/' \
   /etc/pam.d/su
 RUN useradd -m user0 
-# enable empty passwd for user0, but this is not enough.
+# enable empty passwd for user0.
 RUN passwd  -d user0
 RUN sed -i 's/nullok_secure/nullok/' /etc/pam.d/common-auth
+# enable sudo without passwd for user0.
 RUN gpasswd -a user0 wheel
 RUN gpasswd -a user0 sudo
 RUN chsh -s /bin/bash user0
