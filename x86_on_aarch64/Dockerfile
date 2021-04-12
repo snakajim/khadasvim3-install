@@ -25,7 +25,7 @@
 
 FROM multiarch/ubuntu-core:amd64-bionic
 SHELL ["/bin/bash", "-c"]
-RUN apt-get -y update && apt-get -y upgrade && && \
+RUN apt-get -y update && apt-get -y upgrade && \
   apt-get install -y build-essential software-properties-common
 RUN apt-get -y install --no-install-recommends \
     sudo git wget make gcc curl \
