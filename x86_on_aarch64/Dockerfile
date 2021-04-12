@@ -34,3 +34,21 @@ RUN apt-get -y install --no-install-recommends \
     python3 python3-venv python3-dev python3-pip
 RUN rm -rf /var/lib/apt/lists/*
 
+# ----------------------------------------------
+# adding user0 without passwd, 
+# it is a litte bit tricky in Ubuntu 18.04 
+# ----------------------------------------------
+RUN addgroup wheel
+RUN sed -i -E \
+  's/\#\s+auth\s+required\s+pam_wheel\.so$/auth      required      pam_wheel\.so group=wheel/' \
+  /etc/pam.d/su
+RUN useradd -m user0 
+# enable empty passwd for user0, but this is not enough.
+RUN passwd  -d user0
+RUN sed -i 's/nullok_secure/nullok/' /etc/pam.d/common-auth
+RUN gpasswd -a user0 wheel
+RUN gpasswd -a user0 sudo
+RUN chsh -s /bin/bash user0
+RUN echo "# Privilege specification for user0" >> /etc/sudoers
+RUN echo "user0    ALL=NOPASSWD: ALL" >> /etc/sudoers
+RUN sed -i 's/^# auth       sufficient pam_wheel.so trust/auth       sufficient pam_wheel.so trust grouop=wheel/' /etc/pam.d/su
