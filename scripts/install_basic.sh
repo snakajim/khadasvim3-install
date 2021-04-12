@@ -117,7 +117,7 @@ if [ $ret -eq 1 ]; then
   chsh -s /bin/bash user0
   echo "# Privilege specification for user0" >> /etc/sudoers
   echo "user0    ALL=NOPASSWD: ALL" >> /etc/sudoers
-  sed -i 's/^# auth       sufficient pam_wheel.so trust/auth       sufficient pam_wheel.so trust grouop=wheel/' /etc/pam.d/su
+  sed -i 's/^# auth       sufficient pam_wheel.so trust/auth       sufficient pam_wheel.so trust group=wheel/' /etc/pam.d/su
 fi
 mkdir -p /home/user0/tmp && mkdir -p /home/user0/work && mkdir -p /home/user0/.ssh
 if [ -f /home/user0/.ssh/authorized_keys ]; then

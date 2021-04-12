@@ -15,9 +15,9 @@
 # docker run --rm --privileged aptman/qus -s -- -p x86_64
 # -------------------------------------
 # To build
-# $> docker build --rm -t test .
+# $> docker build --rm -t test:x86_64 .
 # To test
-# $> docker run --rm -it test uname -m
+# $> docker run --rm -it test:x86_64 uname -m
 # To run
 # $> docker pull nsatoshi/tensorflow-lite-micro-rtos-fvp:gcc 
 # $> docker run -it --name eda -u user1 --privileged --restart=always -d --net host nsatoshi/tensorflow-lite-micro-rtos-fvp:gcc sh
@@ -51,4 +51,5 @@ RUN gpasswd -a user0 sudo
 RUN chsh -s /bin/bash user0
 RUN echo "# Privilege specification for user0" >> /etc/sudoers
 RUN echo "user0    ALL=NOPASSWD: ALL" >> /etc/sudoers
-RUN sed -i 's/^# auth       sufficient pam_wheel.so trust/auth       sufficient pam_wheel.so trust grouop=wheel/' /etc/pam.d/su
+RUN sed -i 's/^# auth       sufficient pam_wheel.so trust/auth       sufficient pam_wheel.so trust group=wheel/' /etc/pam.d/su
+RUN exec $SHELL -l
