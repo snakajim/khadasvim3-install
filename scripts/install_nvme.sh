@@ -42,32 +42,36 @@ else
   sudo mkfs -t ext4 /dev/nvme0n1p3
   sudo mkfs -t ext4 /dev/nvme0n1p4
   su root
-  cd /
+  cd /root
   # 1. 
   # Copy /var to /dev/nvme0n1p1, 100G
   mkdir -p /var_tmp && mount /dev/nvme0n1p1 /var_tmp 
   mv /var/* /var_tmp
   echo “/dev/nvme0n1p1 /var  ext4    defaults 1 1” >> /etc/fstab
   mount -a
+  lsblk
   # 2. 
   # Copy /tmp to /dev/nvme0n1p2, 50G
   mkdir -p /tmp_tmp && mount /dev/nvme0n1p2 /tmp_tmp
   mv /tmp/* /tmp_tmp
   echo “/dev/nvme0n1p2 /tmp  ext4    defaults 1 1” >> /etc/fstab
   mount -a
+  lsblk
   # 3.
   # Copy /home to /dev/nvme0n1p3, 50G
-  mkdir -p /home_tmp && mount /dev/nvme0n1p2 /home_tmp
+  mkdir -p /home_tmp && mount /dev/nvme0n1p3 /home_tmp
   mv /home/* /home_tmp/
   chown -R khadas:khadas /home_tmp/khadas
   echo “/dev/nvme0n1p3 /home  ext4    defaults 1 1” >> /etc/fstab
   mount -a
+  lsblk
   # 4.
   # Copy /usr to /dev/nvme0n1p4, ~30G
   mkdir -p /usr_tmp && mount /dev/nvme0n1p4 /usr_tmp
   cp -r /usr/* /usr_tmp/
   echo “/dev/nvme0n1p4 /usr  ext4    defaults 1 1” >> /etc/fstab
   mount -a
+  lsblk
   reboot
 fi  
   
