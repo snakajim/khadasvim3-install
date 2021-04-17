@@ -52,4 +52,4 @@ RUN chsh -s /bin/bash user0
 RUN echo "# Privilege specification for user0" >> /etc/sudoers
 RUN echo "user0    ALL=NOPASSWD: ALL" >> /etc/sudoers
 RUN sed -i 's/^# auth       sufficient pam_wheel.so trust/auth       sufficient pam_wheel.so trust group=wheel/' /etc/pam.d/su
-RUN exec $SHELL -l
+#RUN exec $SHELL -l
