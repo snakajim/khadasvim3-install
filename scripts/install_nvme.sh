@@ -20,7 +20,11 @@ else
   sudo reboot
   #echo 1 > /sys/class/mcu/poweroff 
 fi
+
+# --------------------------------------------------
 #
+# --------------------------------------------------
+
 fdisk -l | grep nvme
 NVME_ON=$?
 if [${PCI_ON} -eq 1]; then
@@ -40,29 +44,30 @@ else
   su root
   # 1. 
   # Copy /var to /dev/nvme0n1p1, 100G
-  mkdir -p /var_tmp && mount /dev/nvme0n1p1 /var_tmp && \
-    mv -r /var/. /var_tmp
+  mkdir -p /var_tmp && mount /dev/nvme0n1p1 /var_tmp 
+  mv /var/* /var_tmp
   echo “/dev/nvme0n1p1 /var  ext4    default 1 1” >> /etc/fstab
   mount -a
   # 2. 
   # Copy /tmp to /dev/nvme0n1p2, 50G
-  mkdir -p /tmp_tmp && mount /dev/nvme0n1p2 /tmp_tmp && \
-    mv -r /tmp/. /tmp_tmp
+  mkdir -p /tmp_tmp && mount /dev/nvme0n1p2 /tmp_tmp
+  mv /tmp/* /tmp_tmp
   echo “/dev/nvme0n1p2 /tmp  ext4    default 1 1” >> /etc/fstab
   mount -a
   # 3.
   # Copy /home to /dev/nvme0n1p3, 50G
-  mkdir -p /home_tmp && mount /dev/nvme0n1p2 /home_tmp && \
-    mv -r /home/. /home_tmp
+  mkdir -p /home_tmp && mount /dev/nvme0n1p2 /home_tmp
+  mv /home/* /home_tmp/
+  chown -R khadas:khadas /home_tmp/khadas
   echo “/dev/nvme0n1p3 /home  ext4    default 1 1” >> /etc/fstab
   mount -a
-  chown -R khadas:khadas /home/khadas 
   # 4.
   # Copy /usr to /dev/nvme0n1p4, ~30G
-  mkdir -p /usr_tmp && mount /dev/nvme0n1p4 /usr_tmp && \
-    mv -r /usr/. /usr_tmp
+  mkdir -p /usr_tmp && mount /dev/nvme0n1p4 /usr_tmp
+  cp /usr/* /usr_tmp/
   echo “/dev/nvme0n1p4 /usr  ext4    default 1 1” >> /etc/fstab
   mount -a
+  reboot
 fi  
   
   
