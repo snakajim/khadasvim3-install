@@ -25,54 +25,70 @@ fi
 #
 # --------------------------------------------------
 
-fdisk -l | grep nvme
-NVME_ON=$?
-if [${PCI_ON} -eq 1]; then
-  echo "NVME device is not recognized, program exit"
+NVME_ON=`fdisk -l | grep nvme | wc -l`
+if [${NVME_ON} -eq 0]; then
+  echo "NVME device is not recognized, program exit."
+  sleep 10
+  exit
+else
+if [${NVME_ON} -gt 1]; then
+  echo "2 or more NVME device detected. "
+  echo "Please re-partition by fdisk command, program exit."
   sleep 10
   exit
 else
   NVME_ID=`fdisk -l | grep nvme | sed -r 's/^.*(\/dev\/nvme\w+)(\s|:).*$/\1/'`
-  echo "you have NVME under ${NVME_ID}"
+  echo "you have NVME under ${NVME_ID}, format first"
+  sudo mkfs -t ext4 ${NVME_ID}
   # please make partition in 1-4
   sudo fdisk $NVME_ID
   # Then format to ext4
-  sudo mkfs -t ext4 /dev/nvme0n1p1
-  sudo mkfs -t ext4 /dev/nvme0n1p2
-  sudo mkfs -t ext4 /dev/nvme0n1p3
-  sudo mkfs -t ext4 /dev/nvme0n1p4
-  su root
-  cd /root
-  # 1. 
-  # Copy /var to /dev/nvme0n1p1, 100G
-  mkdir -p /var_tmp && mount /dev/nvme0n1p1 /var_tmp 
-  mv /var/* /var_tmp
-  echo “/dev/nvme0n1p1 /var  ext4    defaults 1 1” >> /etc/fstab
-  mount -a
+  sudo mkfs -t ext4  ${NVME_ID}p1
+  sudo mkfs -t ext4  ${NVME_ID}p2
+  sudo mkfs -t ext4  ${NVME_ID}p3
+  sudo mkfs -t ext4  ${NVME_ID}p4
+  lsblk -o +UUID
+  UUID_P1=`lsblk -o +UUID | grep nvme | grep p1 | sed -E 's/^.+part\s+(.+)$/\1/'`
+  UUID_P2=`lsblk -o +UUID | grep nvme | grep p2 | sed -E 's/^.+part\s+(.+)$/\1/'`
+  UUID_P3=`lsblk -o +UUID | grep nvme | grep p3 | sed -E 's/^.+part\s+(.+)$/\1/'`
+  UUID_P4=`lsblk -o +UUID | grep nvme | grep p4 | sed -E 's/^.+part\s+(.+)$/\1/'`
+
+  # 1. mkdir (temporary) mount directories
+  sudo rm -rf /mnt/var_tmp /mnt/tmp_tmp /mnt/home_tmp /mnt/usr_tmp
+  sudo mkdir -p /mnt/var_tmp /mnt/tmp_tmp /mnt/home_tmp /mnt/usr_tmp
+
+  # 2. mount directories
+  sudo mount ${NVME_ID}p1 /mnt/var_tmp 
+  sudo mount ${NVME_ID}p2 /mnt/tmp_tmp 
+  sudo mount ${NVME_ID}p3 /mnt/home_tmp 
+  sudo mount ${NVME_ID}p4 /mnt/usr_tmp 
   lsblk
-  # 2. 
-  # Copy /tmp to /dev/nvme0n1p2, 50G
-  mkdir -p /tmp_tmp && mount /dev/nvme0n1p2 /tmp_tmp
-  mv /tmp/* /tmp_tmp
-  echo “/dev/nvme0n1p2 /tmp  ext4    defaults 1 1” >> /etc/fstab
-  mount -a
-  lsblk
-  # 3.
-  # Copy /home to /dev/nvme0n1p3, 50G
-  mkdir -p /home_tmp && mount /dev/nvme0n1p3 /home_tmp
-  mv /home/* /home_tmp/
-  chown -R khadas:khadas /home_tmp/khadas
-  echo “/dev/nvme0n1p3 /home  ext4    defaults 1 1” >> /etc/fstab
-  mount -a
-  lsblk
-  # 4.
-  # Copy /usr to /dev/nvme0n1p4, ~30G
-  mkdir -p /usr_tmp && mount /dev/nvme0n1p4 /usr_tmp
-  cp -r /usr/* /usr_tmp/
-  echo “/dev/nvme0n1p4 /usr  ext4    defaults 1 1” >> /etc/fstab
-  mount -a
-  lsblk
-  reboot
+  
+  # 3. Copy original to mount directories
+  df /mnt/*_tmp
+  cd /var  && sudo tar cpf - . | sudo tar xpf - -C /mnt/var_tmp
+  cd /tmp  && sudo tar cpf - . | sudo tar xpf - -C /mnt/tmp_tmp
+  cd /home && sudo tar cpf - . | sudo tar xpf - -C /mnt/home_tmp
+  cd /usr  && sudo tar cpf - . | sudo tar xpf - -C /mnt/usr_tmp
+  df /mnt/*_tmp
+
+  # 4. unmount
+  sudo umount /mnt/var_tmp /mnt/tmp_tmp /mnt/home_tmp /mnt/usr_tmp
+
+  # 5. make additional fstab
+  echo “UUID=${UUID_P1}   /var      ext4    defaults     1   1” | sudo sh -c "cat >  /etc/fstab.add"
+  echo “UUID=${UUID_P2}   /tmp      ext4    defaults     1   1” | sudo sh -c "cat >> /etc/fstab.add"
+  echo “UUID=${UUID_P3}   /home     ext4    defaults     1   1” | sudo sh -c "cat >> /etc/fstab.add"
+  echo “UUID=${UUID_P4}   /usr      ext4    defaults     1   1” | sudo sh -c "cat >> /etc/fstab.add"
+
+  # 5. merge into main /etc/fstab
+  sudo sh -c "cat /etc/fstab.add >> /etc/fstab"
+
+  # 6. disalble tmpfs file system
+  sudo sed -i 's/^tmpfs/#tmpfs/' /etc/fstab
+
+  # 7. Reboot to refresh changes.
+  sudo reboot
 fi  
   
   
