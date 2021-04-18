@@ -117,7 +117,7 @@ fi
 if [ -f /usr/local/llvm_1101/bin/lld ]; then
   sudo rm /usr/bin/ld
   sudo ln -s /usr/local/llvm_1101/bin/lld /usr/bin/ld
-  echo "/usr/bin/ld is replaced by lld(symbolic link)."
+  echo "/usr/bin/ld is replaced by lld."
 else
   echo "ERROR : lld not found under /usr/local/llvm_1101/bin/"
   echo "ERROR : Please check if your llvm build is ok. Program exit."
