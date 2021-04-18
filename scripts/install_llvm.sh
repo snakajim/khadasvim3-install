@@ -46,8 +46,9 @@ else
   echo "Proceed LLVM-11.0.1 install."
 fi
 
-export CXX="/usr/bin/g++-9"
-export CC="/usr/bin/gcc-9"
+sudo apt install -y clang
+export CXX="/usr/bin/clang++"
+export CC="/usr/bin/clang"
 
 # ---------------------------
 # Confirm which OS you are in 
