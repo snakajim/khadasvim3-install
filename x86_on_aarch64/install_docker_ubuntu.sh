@@ -1,5 +1,5 @@
 #!/bin/bash
-# This script is only tested in Aarch64 Ubuntu 20.04 LTS(LK)
+# This script is only tested in Aarch64 Ubuntu 20.04 LTS(LK4.7)
 # 
 # SYNOPSYS:
 # Install docker infrastructure to run x86 container on aarch64
@@ -26,10 +26,13 @@ sudo add-apt-repository \
 sudo apt update
 sudo apt-cache policy docker-ce
 sudo apt-get install -y --no-install-recommends docker-ce docker-ce-cli containerd.io
+sudo apt-get install -y docker-ce-rootless-extras
+#/usr/bin/dockerd-rootless-setuptool.sh install
 
 # -------------------------------------
 # add users and systemctl
 # -------------------------------------
+#sudo sed -E -i "s/^ExecStartPre/#ExecStartPre/" /lib/systemd/system/containerd.service
 sudo systemctl start docker
 sudo systemctl enable docker
 sudo gpasswd -a $USER docker
