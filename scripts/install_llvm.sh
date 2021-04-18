@@ -34,20 +34,20 @@ ret=$?
 if [ $ret -eq 0 ]; then
   CLANG_VERSION=$(clang --version | awk 'NR<2 { print $3 }' | awk -F. '{printf "%2d%02d%02d", $1,$2,$3}')
   if [ $CLANG_VERSION -eq "110001" ]; then
-    echo "You have already had LLVM-11.1.0."
+    echo "You have already had LLVM-11.0.1."
     echo "Skip installation. Program exit."
     exit
   else
     echo "You have already had LLVM clang but it is not target version=$CLANG_VERSION."
-    echo "Proceed LLVM-11.1.0 install."
+    echo "Proceed LLVM-11.0.1 install."
   fi
 else
   echo "LLVM-clang is not found in your system."
-  echo "Proceed LLVM-11.1.0 install."
+  echo "Proceed LLVM-11.0.1 install."
 fi
 
-export CXX="/usr/bin/g++-8"
-export CC="/usr/bin/gcc-8"
+export CXX="/usr/bin/g++-9"
+export CC="/usr/bin/gcc-9"
 
 # ---------------------------
 # Confirm which OS you are in 
@@ -66,12 +66,12 @@ else
 fi
 
 #
-# install LLVM 1110
+# install LLVM 1101
 #
 cd ${HOME}/tmp && rm -rf llvm*
 cd ${HOME}/tmp && git clone --depth 1 https://github.com/llvm/llvm-project.git -b llvmorg-11.0.1 && \
   cd llvm-project && mkdir -p build && cd build
-echo "start LLVM1110 build"
+echo "start LLVM1101 build"
 date
 if [ $OSNOW = "UBUNTU" ] ||  [ $OSNOW = "DEBIAN" ]; then 
   cmake -G Ninja -G "Unix Makefiles"\
@@ -80,7 +80,7 @@ if [ $OSNOW = "UBUNTU" ] ||  [ $OSNOW = "DEBIAN" ]; then
     -DLLVM_ENABLE_PROJECTS="clang;libcxx;libcxxabi;lld;openmp" \
     -DCMAKE_BUILD_TYPE=RELEASE \
     -DLLVM_TARGETS_TO_BUILD="ARM;AArch64" \
-    -DCMAKE_INSTALL_PREFIX="/usr/local/llvm_1110" \
+    -DCMAKE_INSTALL_PREFIX="/usr/local/llvm_1101" \
     ../llvm && make -j${CPU} && sudo make install
 elif [ $OSNOW = "CENTOS" ]; then
   cmake -G Ninja -G "Unix Makefiles" \
@@ -89,12 +89,12 @@ elif [ $OSNOW = "CENTOS" ]; then
     -DLLVM_ENABLE_PROJECTS="clang;libcxx;libcxxabi;lld;openmp" \
     -DCMAKE_BUILD_TYPE=RELEASE \
     -DLLVM_TARGETS_TO_BUILD="ARM;AArch64" \
-    -DCMAKE_INSTALL_PREFIX="/usr/local/llvm_1110" \
+    -DCMAKE_INSTALL_PREFIX="/usr/local/llvm_1101" \
     ../llvm && make -j${CPU} && sudo make install
 else
   echo "please set right choise in OS=$OSNOW.."
 fi
-echo "end LLVM1110 build"
+echo "end LLVM1101 build"
 date
 make clean
 
@@ -103,22 +103,22 @@ make clean
 #
 grep LLVM_DIR ${HOME}/.bashrc
 ret=$?
-if [ $ret -eq 1 ] && [ -d /usr/local/llvm_1110/bin ]; then
+if [ $ret -eq 1 ] && [ -d /usr/local/llvm_1101/bin ]; then
   echo "Updating ${HOME}/.bashrc"
   echo "# " >> ${HOME}/.bashrc
   echo "# LLVM setting for binary and LD_ & LIBRARY_PATH" >> ${HOME}/.bashrc
-  echo "export LLVM_DIR=/usr/local/llvm_1110">> ${HOME}/.bashrc
+  echo "export LLVM_DIR=/usr/local/llvm_1101">> ${HOME}/.bashrc
   echo "export PATH=\$LLVM_DIR/bin:\$PATH" >>  ${HOME}/.bashrc
   echo "export LIBRARY_PATH=\$LLVM_DIR/lib:\$LIBRARY_PATH" >>  ${HOME}/.bashrc
   echo "export LD_LIBRARY_PATH=\$LLVM_DIR/lib:\$LD_LIBRARY_PATH" >>  ${HOME}/.bashrc
 fi
 
-if [ -f /usr/local/llvm_1110/bin/lld ]; then
+if [ -f /usr/local/llvm_1101/bin/lld ]; then
   sudo rm /usr/bin/ld
-  sudo ln -s /usr/local/llvm_1110/bin/lld /usr/bin/ld
+  sudo ln -s /usr/local/llvm_1101/bin/lld /usr/bin/ld
   echo "/usr/bin/ld is replaced by lld(symbolic link)."
 else
-  echo "ERROR : lld not found under /usr/local/llvm_1110/bin/"
+  echo "ERROR : lld not found under /usr/local/llvm_1101/bin/"
   echo "ERROR : Please check if your llvm build is ok. Program exit."
   exit
 fi
@@ -128,9 +128,9 @@ fi
 # ------------------------------------------------------
 exec $SHELL -l
 sudo ldconfig -v
-CLANG_VERSION=$(/usr/local/llvm_1110/bin/clang --version | awk 'NR<2 { print $3 }' | awk -F. '{printf "%2d%02d%02d", $1,$2,$3}')
+CLANG_VERSION=$(/usr/local/llvm_1101/bin/clang --version | awk 'NR<2 { print $3 }' | awk -F. '{printf "%2d%02d%02d", $1,$2,$3}')
 if [ $CLANG_VERSION -eq "110001" ]; then
-  echo "You have LLVM-11.1.0 under /usr/local/llvm_1110/."
+  echo "You have LLVM-11.0.1 under /usr/local/llvm_1101/."
   echo "Conguraturations."
   echo "LLVM compile & install done."
   date
