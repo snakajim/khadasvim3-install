@@ -7,19 +7,25 @@
 # "Setup the PCIe / USB3.0 port using the Android/Ubuntu command line" 
 # https://docs.khadas.com/vim3/HowToSetupPcieUsbPort.html
 #
-PCI_ON=`cat /sys/class/mcu/usb_pcie_switch_mode`
-
-if [${PCI_ON} -eq 1]; then
-  echo "Your PCI port is on"
-  sudo apt install -y nvme-cli
-else
-  echo "Your PCI port is off(USB mode), switch to PCI"
-  echo 1 > /sys/class/mcu/usb_pcie_switch_mode
-  echo "system reboot to reflect changes"
-  sleep 5
+# -----------
+# reduce MAX_SPEED down to 1.0GHz, 
+# otherwize nvme write will stop during process.
+# -----------
+sudo apt install -y aptitude
+sudo apt install -y lm-sensors hardinfo
+#watch -n 10 cat /sys/class/thermal/thermal_zone*/temp
+MAX_SPEED=`grep MAX_SPEED /etc/default/cpufrequtils | sed -e 's/MAX_SPEED=//'`
+if [ $MAX_SPEED -gt 1000000 ]; then 
+  sudo perl -pi -e 's/MAX_SPEED=\d+/MAX_SPEED=1000000/' /etc/default/cpufrequtils
+  echo "/etc/default/cpufrequtils MAX_SPEED is changed, reboot in 10sec"
+  sleep 10
   sudo reboot
-  #echo 1 > /sys/class/mcu/poweroff 
+else
+  echo "MAX_SPEED is set to ${MAX_SPEED}. It is safe to proceed NVME write."
+  echo ""
+  sleep 2
 fi
+
 
 # --------------------------------------------------
 #
@@ -43,6 +49,10 @@ else
   # please make partition in 1-4
   sudo fdisk $NVME_ID
   # Then format to ext4
+  # part 1  /var 50G
+  # part 2  /tmp 50G
+  # part 3  /home 50G
+  # part 4  /usr lest of size
   sudo mkfs -t ext4  ${NVME_ID}p1
   sudo mkfs -t ext4  ${NVME_ID}p2
   sudo mkfs -t ext4  ${NVME_ID}p3
@@ -89,6 +99,7 @@ else
 
   # 7. Reboot to refresh changes.
   sudo reboot
-fi  
+fi
+fi
   
   
