@@ -31,7 +31,7 @@ fi
 #
 # --------------------------------------------------
 
-NVME_ON=`fdisk -l | grep nvme | wc -l`
+NVME_ON=`sudo fdisk -l | grep nvme | wc -l`
 if [${NVME_ON} -eq 0]; then
   echo "NVME device is not recognized, program exit."
   sleep 10
@@ -43,7 +43,7 @@ if [${NVME_ON} -gt 1]; then
   sleep 10
   exit
 else
-  NVME_ID=`fdisk -l | grep nvme | sed -r 's/^.*(\/dev\/nvme\w+)(\s|:).*$/\1/'`
+  NVME_ID=`sudo fdisk -l | grep nvme | sed -r 's/^.*(\/dev\/nvme\w+)(\s|:).*$/\1/'`
   echo "you have NVME under ${NVME_ID}, format first"
   sudo mkfs -t ext4 ${NVME_ID}
   sleep 5
