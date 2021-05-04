@@ -52,8 +52,10 @@ sleep 10
 # addgroup wheel and grant sudo authority
 #
 addgroup wheel
+groupadd docker
 gpasswd -a khadas wheel
 gpasswd -a khadas sudo
+gpasswd -a khadas docker
 echo "# Privilege specification for khadas" >> /etc/sudoers
 echo "khadas    ALL=NOPASSWD: ALL" >> /etc/sudoers
 sed -i -E \
@@ -99,6 +101,12 @@ sed -i 's/^#PermitEmptyPasswords no/PermitEmptyPasswords yes/' /etc/ssh/sshd_con
 systemctl restart sshd
 sleep 10
 
+#
+# Japanese font install
+#
+apt-get -y install language-pack-ja
+apt-get -y install japan*
+apt-get -y install fonts-arphic-ukai fonts-arphic-uming fonts-ipafont-mincho fonts-ipafont-gothic fonts-unfonts-core
 
 # add "user0" without passward.
 # you can replace "user0" to your favorite user account later.

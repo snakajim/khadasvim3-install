@@ -17,26 +17,23 @@ sudo apt -y autoremove
 # -------------------------------------
 # set environment and install docker-ce
 # -------------------------------------
-sudo apt-get install -y apt-transport-https ca-certificates curl software-properties-common
+sudo apt-get update
+sudo apt-get install apt-transport-https ca-certificates curl software-properties-common
 curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
 sudo add-apt-repository \
 	"deb [arch=arm64] https://download.docker.com/linux/ubuntu \
 	$(lsb_release -cs) \
 	stable"
-sudo apt update
-sudo apt-cache policy docker-ce
-sudo apt-get install -y --no-install-recommends docker-ce docker-ce-cli containerd.io
-sudo apt-get install -y docker-ce-rootless-extras
-#/usr/bin/dockerd-rootless-setuptool.sh install
-
-# -------------------------------------
-# add users and systemctl
-# -------------------------------------
-#sudo sed -E -i "s/^ExecStartPre/#ExecStartPre/" /lib/systemd/system/containerd.service
-sudo systemctl start docker
-sudo systemctl enable docker
-sudo gpasswd -a $USER docker
+# For Ubuntu 20.04
+sudo apt-get update
+sudo apt-get install docker-ce docker-ce-cli containerd.io
+sudo groupadd docker
+sudo usermod -aG docker $USER
 sudo chmod 666 /var/run/docker.sock
+sudo systemctl enable docker
+sudo systemctl start docker
+
+# clean up all local images and hello world
 docker images -aq | xargs docker rmi
 docker images 
 docker run hello-world
