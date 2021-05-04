@@ -115,13 +115,13 @@ else
   sudo umount /mnt/var_tmp /mnt/tmp_tmp /mnt/home_tmp /mnt/usr_tmp
 
   # 5. make additional fstab
-  echo "UUID=${UUID_P1}   /var      ext4    defaults     1   1" | sudo sh -c "cat >  /etc/fstab.add"
-  echo "UUID=${UUID_P2}   /tmp      ext4    defaults     1   1" | sudo sh -c "cat >> /etc/fstab.add"
-  echo "UUID=${UUID_P3}   /home     ext4    defaults     1   1" | sudo sh -c "cat >> /etc/fstab.add"
-  echo "UUID=${UUID_P4}   /usr      ext4    defaults     1   1" | sudo sh -c "cat >> /etc/fstab.add"
+  echo "#UUID=${UUID_P1}   /var      ext4    defaults     1   1" | sudo sh -c "cat >  /etc/fstab.add"
+  echo "#UUID=${UUID_P2}   /tmp      ext4    defaults     1   1" | sudo sh -c "cat >> /etc/fstab.add"
+  echo "#UUID=${UUID_P3}   /home     ext4    defaults     1   1" | sudo sh -c "cat >> /etc/fstab.add"
+  echo "#UUID=${UUID_P4}   /usr      ext4    defaults     1   1" | sudo sh -c "cat >> /etc/fstab.add"
 
   # 5. merge into main /etc/fstab
-  #sudo sh -c "cat /etc/fstab.add >> /etc/fstab"
+  sudo sh -c "cat /etc/fstab.add >> /etc/fstab"
   echo "change candidate to /etc/fstab is available"
   cat /etc/fstab.add
   echo ""
