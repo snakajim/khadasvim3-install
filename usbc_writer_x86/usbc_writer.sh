@@ -4,11 +4,7 @@
 #
 
 # ----------------------------------
-# Step 1. Download and Install Burning Tool on x86_docker
-# docker build -<<EOF
-# FROM busybox
-# RUN echo "hello world"
-# EOF
+# Step 1. Download Burning Tool on x86_docker, but not install(does not work!)
 # ----------------------------------
 
 # Ubuntu 20.04 LTS
@@ -46,4 +42,12 @@ RUN cd /root/tmp && \
   git clone https://github.com/khadas/utils
 EOF
 
-#
+
+# ----------------------------------
+# Step 2. Run container and make sure USB access, then install burning tool
+# ----------------------------------
+
+
+# ----------------------------------
+# Step 3. Image burning and close
+# ----------------------------------
