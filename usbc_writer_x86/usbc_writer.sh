@@ -37,12 +37,13 @@ RUN apt-get -y upgrade
 RUN apt-get -y install git
 RUN apt-get -y install build-essential sudo aria2
 RUN apt-get -y install libusb-dev parted
-RUN mkdir -p ${HOME}/tmp && cd ${HOME}/tmp && \
-  git clone https://github.com/khadas/utils
-COPY ./VIM3_Ubuntu-gnome-focal_Linux-5.12_arm64_SD-USB_V1.0.5-210430.img.x \
-  ${HOME}/tmp/VIM3_Ubuntu-gnome-focal_Linux-5.12_arm64_SD-USB_V1.0.5-210430.img.xz
+RUN mkdir -p /root/tmp
+COPY ./VIM3_Ubuntu-gnome-focal_Linux-5.12_arm64_SD-USB_V1.0.5-210430.img.xz \
+  /root/tmp/
 COPY ./VIM3_Ubuntu-server-focal_Linux-5.12_arm64_SD-USB_V1.0.5-210430.img.xz \
-  ${HOME}/tmp/VIM3_Ubuntu-server-focal_Linux-5.12_arm64_SD-USB_V1.0.5-210430.img.xz
+  /root/tmp/
+RUN cd /root/tmp && \
+  git clone https://github.com/khadas/utils
 EOF
 
 #
