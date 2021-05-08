@@ -104,9 +104,9 @@ sleep 10
 #
 # Japanese font install
 #
-apt-get -y install language-pack-ja
-apt-get -y install japan*
-apt-get -y install fonts-arphic-ukai fonts-arphic-uming fonts-ipafont-mincho fonts-ipafont-gothic fonts-unfonts-core
+#apt-get -y install language-pack-ja
+#apt-get -y install japan*
+#apt-get -y install fonts-arphic-ukai fonts-arphic-uming fonts-ipafont-mincho fonts-ipafont-gothic fonts-unfonts-core
 
 # add "user0" without passward.
 # you can replace "user0" to your favorite user account later.
@@ -147,6 +147,8 @@ if [ $ret -eq 0 ]; then
   echo "Khadas is detected."
   hostnamectl set-hostname Khadasarmkk
   sed -i 's/ Khadas/ Khadasarmkk/' /etc/hosts
+  echo "New hostname is set."
+  echo `hostname`
   sleep 10
 fi
 #
