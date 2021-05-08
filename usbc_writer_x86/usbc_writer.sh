@@ -3,7 +3,7 @@
 # https://docs.khadas.com/vim3/UpgradeViaUSBCable.html
 #
 
-ARCH=arm64
+ARCH=amd64
 
 # ----------------------------------
 # Step 1. USB connection check
@@ -46,6 +46,7 @@ RUN mkdir -p /root/tmp
 RUN cd /root/tmp && \
   git clone https://github.com/khadas/utils
 RUN mkdir -p /root/images
+RUN aria2c -x2 http://www.linux-usb.org/usb.ids -o /var/lib/usbutils/usb.ids
 EOF
 
 
