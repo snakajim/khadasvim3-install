@@ -14,6 +14,13 @@ sudo dpkg --remove --force-remove-reinstreq docker-ce docker-ce-rootless-extras
 sudo apt-get remove docker docker-engine docker.io containerd runc
 sudo apt -y autoremove
 
+#
+# extra trick to enable bitfmt_misc module
+# http://wizardyhnr.blogspot.com/2016/04/how-to-build-cross-compliatio.html
+#
+# see if you have bitfmt_misc.ko module
+#  /lib/modules/5.12.0/kernel/fs/
+
 # -------------------------------------
 # set environment and install docker-ce
 # -------------------------------------
@@ -37,6 +44,15 @@ sudo systemctl start docker
 docker images -aq | xargs docker rmi
 docker images 
 docker run hello-world
+
+ls /lib/modules/*/kernel/fs/binfmt_misc.ko
+RET=$?
+if [ $RET ne 0 ]; then
+	echo "kernel/fs/binfmt_misc.ko is not found under /lib/modules."
+	echo "aptman/qus may fail. Program exit."
+	sleep 5
+	exit
+fi
 
 # -------------------------------------
 # set docker buildx
