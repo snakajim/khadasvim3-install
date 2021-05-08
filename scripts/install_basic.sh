@@ -84,12 +84,12 @@ sleep 10
 #    GUI remote connect via VNC 
 #
 #apt-get install -y task-gnome-desktop # remote desktop conenct is recommended.
-apt-get install -y xrdp
+#apt-get install -y xrdp
 # wireless mouse setting 
 #apt-get install -y solaar solaar-gnome3
-systemctl start xrdp
-systemctl enable xrdp
-service xrdp restart
+#systemctl start xrdp
+#systemctl enable xrdp
+#service xrdp restart
 
 # Change sshd_config file
 # SSH policy is as root login.
@@ -100,13 +100,6 @@ sed -i 's/^#PasswordAuthentication yes/PasswordAuthentication yes/' /etc/ssh/ssh
 sed -i 's/^#PermitEmptyPasswords no/PermitEmptyPasswords yes/' /etc/ssh/sshd_config
 systemctl restart sshd
 sleep 10
-
-#
-# Japanese font install
-#
-#apt-get -y install language-pack-ja
-#apt-get -y install japan*
-#apt-get -y install fonts-arphic-ukai fonts-arphic-uming fonts-ipafont-mincho fonts-ipafont-gothic fonts-unfonts-core
 
 # add "user0" without passward.
 # you can replace "user0" to your favorite user account later.
