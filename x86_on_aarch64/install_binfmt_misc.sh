@@ -26,8 +26,14 @@ fi
 #
 CPU=`nproc`
 LK=`uname -r | awk -F'.' '{printf $1"."$2}'`
+# change /etc/apt/sources.list to aceess source
+sudo sed -i -e "s/^#deb-src /deb-src /" /etc/apt/sources.list 
 sudo apt -y update
 sudo apt -y upgrade
+# install dependencies
+sudo apt -y install kernel-package
+sudo apt -y install ccache fakeroot libncurses-dev 
+sudo apt -y build-dep linux
 sudo apt -y install linux-source
 sudo apt -y install build-essential libncurses-dev flex bison openssl \
   libssl-dev dkms libelf-dev libudev-dev libpci-dev libiberty-dev autoconf

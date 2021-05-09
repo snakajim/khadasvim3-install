@@ -52,6 +52,9 @@ if [ $RET eq 1 ]; then
 	echo "See also, $> sudo systemctl status proc-sys-fs-binfmt_misc.mount"
 	echo "Maybe you cannot load module, try $> sudo modprobe binfmt_misc"
 	echo "Kernel module binfmt_misc.ko is missing under /lib/modules."
+	echo "Once you copy the module from somewhere. copy or link under kernel/fs then"
+	echo "$> sudo depmod -a"
+	echo "$> sudo modprobe binfmt_misc "
 	echo "So that aptman/qus may fail. Program exit."
 	sleep 5
 	exit
