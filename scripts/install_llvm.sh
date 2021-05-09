@@ -15,8 +15,8 @@ sudo apt install -y aptitude
 sudo apt install -y lm-sensors hardinfo
 #watch -n 10 cat /sys/class/thermal/thermal_zone*/temp
 MAX_SPEED=`grep MAX_SPEED /etc/default/cpufrequtils | sed -e 's/MAX_SPEED=//'`
-if [ $MAX_SPEED -gt 1000000 ]; then 
-  sudo perl -pi -e 's/MAX_SPEED=\d+/MAX_SPEED=1000000/' /etc/default/cpufrequtils
+if [ $MAX_SPEED -gt 1400000 ]; then 
+  sudo perl -pi -e 's/MAX_SPEED=\d+/MAX_SPEED=1200000/' /etc/default/cpufrequtils
   echo "/etc/default/cpufrequtils MAX_SPEED is changed, reboot in 10sec"
   sleep 10
   sudo reboot
