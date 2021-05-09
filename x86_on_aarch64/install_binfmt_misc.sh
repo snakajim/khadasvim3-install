@@ -9,7 +9,7 @@
 #
 
 #
-# Steop.0 expand swap x2
+# Step.0 expand swap x2
 #
 sudo apt-get -y install zram-config
 swapon -s 
@@ -35,10 +35,14 @@ sudo apt -y install build-essential libncurses-dev flex bison openssl \
 #
 # Step.2 Prepare kernel build bench(~/work/LK$LK)
 #
-mkdir -p ${HOME}/work/LK$LK
-cp /usr/src/linux*.tar.bz2 ${HOME}/work/LK$LK
-chmod -R 777 ${HOME}/work/LK$LK
-cd ${HOME}/work/LK$LK && tar jxvf linux*.tar.bz2
+WORK_DIR=${HOME}/work/LK$LK
+#WORK_DIR=/usr/src
+mkdir -p ${WORK_DIR}
+if [ ! -f ${WORK_DIR}/linux*.tar.bz2 ]; then
+  cp /usr/src/linux*.tar.bz2 ${WORK_DIR}
+fi
+chmod -R 777 ${WORK_DIR}
+cd ${WORK_DIR} && tar jxvf linux*.tar.bz2
 cd `ls | grep -v tar.bz2` && cp /boot/config-`uname -r` ./.config
 echo "#MODIFY to compile BINFMT_MISC module(fs/binfmt_misc.ko)." >> .config
 echo "CONFIG_BINFMT_MISC=y" >> .config
