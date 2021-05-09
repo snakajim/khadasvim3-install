@@ -67,12 +67,13 @@ else
 fi
 
 #
-# install LLVM 1101
+# install LLVM 1200
 #
+mkdir -p ${HOME}/tmp
 cd ${HOME}/tmp && rm -rf llvm*
 cd ${HOME}/tmp && git clone --depth 1 https://github.com/llvm/llvm-project.git -b llvmorg-12.0.0 && \
   cd llvm-project && mkdir -p build && cd build
-echo "start LLVM1101 build"
+echo "start LLVM1200 build"
 date
 if [ $OSNOW = "UBUNTU" ] ||  [ $OSNOW = "DEBIAN" ]; then 
   cmake -G Ninja -G "Unix Makefiles"\
@@ -95,7 +96,7 @@ elif [ $OSNOW = "CENTOS" ]; then
 else
   echo "please set right choise in OS=$OSNOW.."
 fi
-echo "end LLVM1101 build"
+echo "end LLVM1200 build"
 date
 make clean
 
@@ -137,7 +138,7 @@ if [ $CLANG_VERSION -eq "110001" ]; then
   date
   exit
 else
-  echo "ERROR: Some issues. LLVM-11.01 was not successfully built."
+  echo "ERROR: Some issues. LLVM-12.00 was not successfully built."
   echo "ERROR: Please check build log. Program exit"
   date
   exit
