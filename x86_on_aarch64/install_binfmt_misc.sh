@@ -61,17 +61,17 @@ mkdir -p $WORK_DIR/build
 # Step.2 Prepare kernel build bench(~/work/LK$LK)
 # --------------------------------------------------
 cp /boot/config-`uname -r` $WORK_DIR/build/.config
-echo "#MODIFY to compile BINFMT_MISC module(fs/binfmt_misc.ko)." >> .config
-echo "CONFIG_BINFMT_MISC=y" >> .config
+echo "#MODIFY to compile BINFMT_MISC module(fs/binfmt_misc.ko)." >> $WORK_DIR/build/.config
+echo "CONFIG_BINFMT_MISC=y" >> $WORK_DIR/build/.config
 cd $WORK_DIR/linux &&  make olddefconfig O=../build
-cd $WORK_DIR/build &&  make localmodcinfig
 cd $WORK_DIR/build &&  yes "" | make oldconfig
 # modify params in .config?
 
 #
 # Step.3 make module
 #
-cd $WORK_DIR/build &&  sudo make modules_install
+cd $WORK_DIR/build &&  LOCALVERSION=-mybuild make -j$CPU
+#cd $WORK_DIR/build &&  sudo make modules_install
 
 # or to shoot all modules
 # make EXTRAVERSION=`uname -r` modules_prepare
