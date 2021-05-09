@@ -96,8 +96,12 @@ if [ ! -f VIM3_Ubuntu-server-focal_Linux-5.12_arm64_SD-USB_V1.0.5-210430.img.xz 
   aria2c -x2 https://downloads.khadas.com/Firmware/Krescue/images/VIM3_Ubuntu-server-focal_Linux-5.12_arm64_SD-USB_V1.0.5-210430.img.xz
 fi
 
-if [ ! -f VIM3_Ubuntu-server-focal_Linux-4.9_arm64_EMMC_V1.0.5-210430.raw.img.xz]; then
+if [ ! -f VIM3_Ubuntu-server-focal_Linux-4.9_arm64_EMMC_V1.0.5-210430.raw.img.xz ]; then
   aria2c -x2 https://downloads.khadas.com/Firmware/Krescue/images/VIM3_Ubuntu-server-focal_Linux-4.9_arm64_EMMC_V1.0.5-210430.raw.img.xz
+fi
+
+if [ ! -f VIM3_Ubuntu-gnome-focal_Linux-4.9_arm64_EMMC_V1.0.5-210430.raw.img.xz ]; then
+  aria2c -x2 https://downloads.khadas.com/Firmware/Krescue/images/VIM3_Ubuntu-gnome-focal_Linux-4.9_arm64_EMMC_V1.0.5-210430.raw.img.xz
 fi
 
 docker cp ./VIM3_Ubuntu-gnome-focal_Linux-5.12_arm64_SD-USB_V1.0.5-210430.img.xz \
