@@ -8,6 +8,23 @@
 # https://qiita.com/progrunner/items/d2ab0a85b3881a4b7ed8#ubuntu%E5%90%91%E3%81%91%E3%82%BD%E3%83%BC%E3%82%B9%E3%81%AE%E5%8F%96%E5%BE%97
 #
 
+# -----------
+# reduce MAX_SPEED down to 1.0GHz, 
+# otherwize compile will stop during process.
+# -----------
+MAX_SPEED=`grep MAX_SPEED /etc/default/cpufrequtils | sed -e 's/MAX_SPEED=//'`
+if [ $MAX_SPEED -gt 1200000 ]; then 
+  sudo perl -pi -e 's/MAX_SPEED=\d+/MAX_SPEED=1200000/' /etc/default/cpufrequtils
+  echo "/etc/default/cpufrequtils MAX_SPEED is changed, reboot in 10sec"
+  sleep 10
+  sudo reboot
+else
+  echo "MAX_SPEED is set to ${MAX_SPEED}. It is safe to proceed kernel compile."
+  echo ""
+  sleep 2
+fi
+
+
 #
 # Step.0 expand swap x2
 #
