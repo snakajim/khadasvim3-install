@@ -5,7 +5,7 @@
 # This is how to do that.
 #
 # Reference:
-# https://wiki.archlinux.jp/index.php/%E3%82%AB%E3%83%BC%E3%83%8D%E3%83%AB%E3%83%A2%E3%82%B8%E3%83%A5%E3%83%BC%E3%83%AB%E3%81%AE%E3%82%B3%E3%83%B3%E3%83%91%E3%82%A4%E3%83%AB
+# https://qiita.com/progrunner/items/d2ab0a85b3881a4b7ed8#ubuntu%E5%90%91%E3%81%91%E3%82%BD%E3%83%BC%E3%82%B9%E3%81%AE%E5%8F%96%E5%BE%97
 #
 
 #
@@ -26,39 +26,45 @@ fi
 #
 CPU=`nproc`
 LK=`uname -r | awk -F'.' '{printf $1"."$2}'`
+WORK_DIR=/tmp/LK$LK
+if [ ! -d $WORK_DIR ]; then
+  mkdir -p $WORK_DIR 
+fi
+
+#
 # change /etc/apt/sources.list to aceess source
-sudo sed -i -e "s/^#deb-src /deb-src /" /etc/apt/sources.list 
+#
+sudo sed -i -e "s/^#\s*deb-src /deb-src /" /etc/apt/sources.list 
 sudo apt -y update
 sudo apt -y upgrade
+
+#
 # install dependencies
-sudo apt -y install kernel-package
-sudo apt -y install ccache fakeroot libncurses-dev 
-sudo apt -y build-dep linux
-sudo apt -y install linux-source
+#
 sudo apt -y install build-essential libncurses-dev flex bison openssl \
   libssl-dev dkms libelf-dev libudev-dev libpci-dev libiberty-dev autoconf
+
+# git pull source code
+cd $WORK_DIR
+git clone --depth 1 https://github.com/torvalds/linux.git -b v$LK
+mkdir -p $WORK_DIR/build
 
 #
 # Step.2 Prepare kernel build bench(~/work/LK$LK)
 #
-WORK_DIR=${HOME}/work/LK$LK
-#WORK_DIR=/usr/src
-mkdir -p ${WORK_DIR}
-if [ ! -f ${WORK_DIR}/linux*.tar.bz2 ]; then
-  cp /usr/src/linux*.tar.bz2 ${WORK_DIR}
-fi
-chmod -R 777 ${WORK_DIR}
-cd ${WORK_DIR} && tar jxvf linux*.tar.bz2
-cd `ls | grep -v tar.bz2` && cp /boot/config-`uname -r` ./.config
+cp /boot/config-`uname -r` $WORK_DIR/build/.config
 echo "#MODIFY to compile BINFMT_MISC module(fs/binfmt_misc.ko)." >> .config
 echo "CONFIG_BINFMT_MISC=y" >> .config
-yes "" | make oldconfig
+cd $WORK_DIR/linux &&  make olddefconfig O=../build
+cd $WORK_DIR/build &&  make localmodcinfig
+cd $WORK_DIR/build &&  yes "" | make oldconfig
 # modify params in .config?
 
 #
 # Step.3 make module
 #
-make -j$CPU
+cd $WORK_DIR/build &&  sudo make modules_install
+
 # or to shoot all modules
 # make EXTRAVERSION=`uname -r` modules_prepare
 # make modules -j$CPU
