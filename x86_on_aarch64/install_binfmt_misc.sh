@@ -31,27 +31,35 @@ if [ ! -d $WORK_DIR ]; then
   mkdir -p $WORK_DIR 
 fi
 
-#
+# --------------------------------------------------
 # change /etc/apt/sources.list to aceess source
-#
+# --------------------------------------------------
 sudo sed -i -e "s/^#\s*deb-src /deb-src /" /etc/apt/sources.list 
 sudo apt -y update
 sudo apt -y upgrade
 
-#
-# install dependencies
-#
+# --------------------------------------------------
+# install dependencies and source
+# --------------------------------------------------
 sudo apt -y install build-essential libncurses-dev flex bison openssl \
   libssl-dev dkms libelf-dev libudev-dev libpci-dev libiberty-dev autoconf
 
 # git pull source code
 cd $WORK_DIR
-git clone --depth 1 https://github.com/torvalds/linux.git -b v$LK
+
+if [ $LK == 4.9 ]; then
+  aria2c -x2 https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/snapshot/linux-4.9.268.tar.gz
+  tar -zxvf linux-4.9.268.tar.gz
+  ln -sf linux-4.9.268 linux
+else
+  git clone --depth 1 https://github.com/torvalds/linux.git -b v$LK
+fi
+
 mkdir -p $WORK_DIR/build
 
-#
+# --------------------------------------------------
 # Step.2 Prepare kernel build bench(~/work/LK$LK)
-#
+# --------------------------------------------------
 cp /boot/config-`uname -r` $WORK_DIR/build/.config
 echo "#MODIFY to compile BINFMT_MISC module(fs/binfmt_misc.ko)." >> .config
 echo "CONFIG_BINFMT_MISC=y" >> .config
