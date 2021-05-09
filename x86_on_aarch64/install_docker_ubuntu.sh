@@ -45,11 +45,14 @@ docker images -aq | xargs docker rmi
 docker images 
 docker run hello-world
 
-ls /lib/modules/*/kernel/fs/binfmt_misc.ko
+mount | grep binfmt_misc
 RET=$?
-if [ $RET ne 0 ]; then
-	echo "kernel/fs/binfmt_misc.ko is not found under /lib/modules."
-	echo "aptman/qus may fail. Program exit."
+if [ $RET eq 1 ]; then
+	echo "binfmt_misc is not mounted."
+	echo "See also, $> sudo systemctl status proc-sys-fs-binfmt_misc.mount"
+	echo "Maybe you cannot load module, try $> sudo modprobe binfmt_misc"
+	echo "Kernel module binfmt_misc.ko is missing under /lib/modules."
+	echo "So that aptman/qus may fail. Program exit."
 	sleep 5
 	exit
 fi
