@@ -1,4 +1,4 @@
-#!bin/bash
+#!/bin/bash
 #
 # If you are missing binfmt_misc.ko under /lib/modules,
 # you need to build LK with "CONFIG_BINFMT_MISC=y" in .config.
@@ -88,11 +88,13 @@ cd $WORK_DIR/build &&  yes "" | make oldconfig
 # Step.3 make module
 #
 cd $WORK_DIR/build &&  LOCALVERSION=-mybuild make -j$CPU
-#cd $WORK_DIR/build &&  sudo make modules_install
+#cd $WORK_DIR/build &&  sudo make install
 
 # or to shoot all modules
-# make EXTRAVERSION=`uname -r` modules_prepare
-# make modules -j$CPU
+#cd $WORK_DIR/build &&  make EXTRAVERSION=`uname -r` modules_prepare -j$CPU
+#cd $WORK_DIR/build &&  make modules -j$CPU
+#cd $WORK_DIR/build &&  sudo make modules_install
+
 
 #
 # Step.4 check your binfmt_misc.ko then move to /fs
