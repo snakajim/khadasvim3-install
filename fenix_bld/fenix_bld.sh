@@ -12,7 +12,7 @@ if [ $RET -eq 0 ]; then
   ARCH=x86_64
 fi
 
-uname -r | grep arm64
+uname -r | grep -e arm64 -e tegra
 RET=$?
 if [ $RET -eq 0 ]; then
   ARCH=arm64

@@ -33,6 +33,8 @@ RUN useradd -c 'khadas' -m -d /home/khadas -s /bin/bash khadas
 RUN sed -i -e '/\%sudo/ c \%sudo ALL=(ALL) NOPASSWD: ALL' /etc/sudoers
 RUN usermod -a -G sudo khadas
 
+RUN chown -R khadas:khadas /home/khadas
+
 USER khadas
 
 WORKDIR /home/khadas/fenix
