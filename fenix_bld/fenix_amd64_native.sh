@@ -4,6 +4,7 @@
 # https://github.com/khadas/fenix
 # git clone https://github.com/khadas/fenix
 #
+today=`date +%F_%H_%M`
 mkdir -p ${HOME}/work
 cd ${HOME}/work
 if [ ! -d ${HOME}/work/fenix ]; then
@@ -22,4 +23,4 @@ source env/setenv.sh -q -s  \
   INSTALL_TYPE=EMMC \
   COMPRESS_IMAGE=no \
   INSTALL_TYPE_RAW=yes
-make -j`nproc`
+make -j`nproc` > ${HOME}/work/make_$today.log 2>&1 &
