@@ -23,4 +23,7 @@ source env/setenv.sh -q -s  \
   INSTALL_TYPE=EMMC \
   COMPRESS_IMAGE=no \
   INSTALL_TYPE_RAW=yes
-make -j`nproc` > ${HOME}/work/make_$today.log 2>&1 &
+# patch in PCIe source?
+# https://forum.khadas.com/t/vim3-ubuntu-kernel-pcie-driver-not-load/6070/7
+make -j`nproc` > ${HOME}/work/make_$today.log 2>&1
+#tail -f ${HOME}/work/make_$today.log
