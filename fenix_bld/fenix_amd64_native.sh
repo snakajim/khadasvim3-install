@@ -4,6 +4,34 @@
 # https://github.com/khadas/fenix
 # git clone https://github.com/khadas/fenix
 #
+
+
+#
+# This script is only for focal_amd64
+#
+cat /etc/lsb-release | grep focal
+RET=$?
+
+if [ $? -eq 1 ]; then
+  echo "You need to choose Ubuntu 20.04(focal) for the host machine."
+  echo "Program exit."
+  sleep 10
+  exit
+fi
+
+uname -a | grep x86_64
+RET=$?
+
+if [ $? -eq 1 ]; then
+  echo "You need to choose x86_64(amd64) for the host machine."
+  echo "Program exit."
+  sleep 10
+  exit
+fi
+
+#
+# start script
+#
 today=`date +%F_%H_%M`
 WORK_DIR=${HOME}/work2
 if [ ! -d $WORK_DIR ]; then
@@ -23,7 +51,7 @@ else
 fi
 
 #
-# config and run
+# config and run in background
 #
 cd $WORK_DIR/fenix
 #sed -i -e "s/KHADAS_BOARD=VIM1/KHADAS_BOARD=VIM3/" config-template.conf
@@ -40,4 +68,4 @@ source env/setenv.sh -q -s  \
   INSTALL_TYPE_RAW=yes
 # patch in PCIe source?
 # https://forum.khadas.com/t/vim3-ubuntu-kernel-pcie-driver-not-load/6070/7
-hohup make -j`nproc` > $WORK_DIR/make_$today.log 2>&1
+nohup make -j`nproc` > $WORK_DIR/make_$today.log 2>&1 &
