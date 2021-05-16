@@ -27,13 +27,16 @@ if [ $? -eq 1 ]; then
   echo "Program exit."
   sleep 10
   exit
+else
+  sudo apt -y update && sudo apt -y upgrade
+  sudo apt-get -y install git make lsb-release qemu-user-static build-essential
 fi
 
 #
 # start script
 #
 today=`date +%F_%H_%M`
-WORK_DIR=${HOME}/work2
+WORK_DIR=${HOME}/work3
 if [ ! -d $WORK_DIR ]; then
   mkdir -p $WORK_DIR
 fi
