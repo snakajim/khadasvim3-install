@@ -84,9 +84,9 @@ while :
       echo "make -j`nproc` is completed."
       break
     else
-      sleep 15
+      sleep 20
       echo -n "."
     fi
   done
 
-echo "fenix_amd64_natie.sh script done."
+echo "fenix_amd64_native.sh script done."
