@@ -84,7 +84,7 @@ while :
       echo "make -j`nproc` is completed."
       break
     else
-      sleep 20
+      sleep 30
       echo -n "."
     fi
   done
