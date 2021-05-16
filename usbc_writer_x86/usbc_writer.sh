@@ -117,8 +117,8 @@ fi
 #
 # If aml-burn-tool does not work, use network -> mmcu writing tool instead. This is how to do that,
 #
-# 1. Use AC-DC power cable.
-# 2. Insert Krescue micro-USB and boot in Krescue mode, not TST ode.
+# 1. Use AC-DC USB-C power cable.
+# 2. Insert Krescue micro-USB and boot in Krescue mode, not TST mode.
 # 3. Make sure your ethernet is connected, and DHCP is active.
 # 4. Set firewall disabled, set PCIe instead of SD.
 # 5. Erase EMMC -> FULL. It may take 5-6 mins.
