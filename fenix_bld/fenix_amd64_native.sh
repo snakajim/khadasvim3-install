@@ -50,7 +50,8 @@ if [ ! -d $WORK_DIR/fenix ]; then
   cd $WORK_DIR/fenix
 else
   cd $WORK_DIR/fenix
-  make clean  
+  make clean
+  ccache -C  
 fi
 
 #
@@ -72,3 +73,19 @@ source env/setenv.sh -q -s  \
 # patch in PCIe source?
 # https://forum.khadas.com/t/vim3-ubuntu-kernel-pcie-driver-not-load/6070/7
 nohup make -j`nproc` > $WORK_DIR/make_$today.log 2>&1 &
+
+echo -n "Process monitor: make -j`nproc` is running with nohup."
+
+while : 
+  do
+    RET=`ps aux | grep -E "make -j\`nproc\`$" | grep "pts/0"`
+    if [ $RET = "" ]; then
+      echo "make -j`nproc` is completed."
+      break
+    else
+      sleep 15
+      echo -n ".";
+    fi
+  done
+
+echo "fenix_amd64_natie.sh script done."
