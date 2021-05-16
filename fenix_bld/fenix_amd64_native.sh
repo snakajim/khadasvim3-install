@@ -5,7 +5,7 @@
 # git clone https://github.com/khadas/fenix
 #
 today=`date +%F_%H_%M`
-WORK_DIR=${HOME}/work
+WORK_DIR=${HOME}/work2
 if [ ! -d $WORK_DIR ]; then
   mkdir -p $WORK_DIR
 fi
@@ -16,6 +16,10 @@ fi
 cd $WORK_DIR
 if [ ! -d $WORK_DIR/fenix ]; then
   git clone --depth 1 https://github.com/khadas/fenix
+  cd $WORK_DIR/fenix
+else
+  cd $WORK_DIR/fenix
+  make clean  
 fi
 
 #
@@ -36,5 +40,4 @@ source env/setenv.sh -q -s  \
   INSTALL_TYPE_RAW=yes
 # patch in PCIe source?
 # https://forum.khadas.com/t/vim3-ubuntu-kernel-pcie-driver-not-load/6070/7
-make -j`nproc` > $WORK_DIR/make_$today.log 2>&1
-ccache -C
+hohup make -j`nproc` > $WORK_DIR/make_$today.log 2>&1
