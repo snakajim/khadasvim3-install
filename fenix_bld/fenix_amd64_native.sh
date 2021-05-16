@@ -137,5 +137,9 @@ while :
     fi
   done
 echo ""
-echo "see image under $WORK_DIR/fenix/build/images"
+echo "Download build image under $WORK_DIR/fenix/build/images to your host to burn."
+echo ""
+echo "scp ec2_amd64_focal:$WORK_DIR/fenix/build/images/VIM3_Ubuntu-server-focal_Linux-4.9_arm64_EMMC_V1.0.5-210516-develop.raw.img \ "
+echo "  ./VIM3_Ubuntu-server-focal_Linux-4.9_arm64_EMMC_V1.0.5-210516-develop.raw-pci.img"
+echo ""
 echo "fenix_amd64_native.sh script done."
