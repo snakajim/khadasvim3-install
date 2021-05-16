@@ -78,13 +78,14 @@ echo -n "Process monitor: make -j`nproc` is running with nohup."
 
 while : 
   do
-    RET=`ps aux | grep -E "make -j\`nproc\`$" | grep "pts/0"`
-    if [ $RET = "" ]; then
+    ps aux | grep -E -q "make -j`nproc`$"
+    RET=$?
+    if [ $RET -eq 1 ]; then
       echo "make -j`nproc` is completed."
       break
     else
       sleep 15
-      echo -n ".";
+      echo -n "."
     fi
   done
 
