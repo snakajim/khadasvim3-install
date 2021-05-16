@@ -98,6 +98,27 @@ else
   echo "Program exit."
   exit
 fi
+if [ -f $WORK_DIR/fenix/build/linux/arch/arm64/boot/dts/amlogic/mesong12b.dtsi ]; then
+  sed -i -e '977 s/status = "disabled"/status = "okay"/' \
+    $WORK_DIR/fenix/build/linux/arch/arm64/boot/dts/amlogic/mesong12b.dtsi
+  echo ""
+  echo "##################################"
+  echo "Applying patch at $WORK_DIR/fenix/build/linux/arch/arm64/boot/dts/amlogic/mesong12b.dtsi"
+  echo "before running make."
+  echo "This is for enable PCIe M2."
+  echo ""
+  sed -n 943,978p $WORK_DIR/fenix/build/linux/arch/arm64/boot/dts/amlogic/mesong12b.dtsi
+  echo ""
+  echo "##################################"
+  echo ""
+else
+  echo ""
+  echo "File $WORK_DIR/fenix/build/linux/arch/arm64/boot/dts/amlogic/mesong12b.dtsi does not exit."
+  echo "Program exit."
+  exit
+fi
+
+
 
 nohup make -j`nproc` > $WORK_DIR/make_$today.log 2>&1 &
 
