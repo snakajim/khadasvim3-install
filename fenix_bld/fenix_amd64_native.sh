@@ -4,7 +4,9 @@
 # https://github.com/khadas/fenix
 # git clone https://github.com/khadas/fenix
 #
-
+# SYNOPSYS
+# Build Ubuntu Focal LK4.9 server img with PCI-e enable patch.
+#
 
 #
 # This script is only for focal_amd64
@@ -58,7 +60,6 @@ fi
 # config and run in background
 #
 cd $WORK_DIR/fenix
-#sed -i -e "s/KHADAS_BOARD=VIM1/KHADAS_BOARD=VIM3/" config-template.conf
 source env/setenv.sh -q -s  \
   KHADAS_BOARD=VIM3 \
   LINUX=4.9 \
@@ -70,8 +71,22 @@ source env/setenv.sh -q -s  \
   INSTALL_TYPE=EMMC \
   COMPRESS_IMAGE=no \
   INSTALL_TYPE_RAW=yes
-# patch in PCIe source?
+
+#
+# patch in PCIe source.
 # https://forum.khadas.com/t/vim3-ubuntu-kernel-pcie-driver-not-load/6070/7
+# ./build/linux/arch/arm64/boot/dts/amlogic/kvim3_linux.dts
+#
+if [-f $WORK_DIR/fenix/build/linux/arch/arm64/boot/dts/amlogic/kvim3_linux.dts ]; then
+  sed -i -e '1398 s/status = "disabled"/status = "okay"/g' \
+    $WORK_DIR/fenix/build/linux/arch/arm64/boot/dts/amlogic/kvim3_linux.dts
+  sed -n 1396,1400p $WORK_DIR/fenix/build/linux/arch/arm64/boot/dts/amlogic/kvim3_linux.dts
+else
+  echo "File $WORK_DIR/fenix/build/linux/arch/arm64/boot/dts/amlogic/kvim3_linux.dts does not exit."
+  echo "Program exit."
+  exit
+fi
+
 nohup make -j`nproc` > $WORK_DIR/make_$today.log 2>&1 &
 
 echo -n "Process monitor: make -j`nproc` is running with nohup."
