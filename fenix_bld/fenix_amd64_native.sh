@@ -1,5 +1,7 @@
 #!/bin/bash
 #
+# KHADAS VIM3 Image build script. 
+#
 # REFERENCE
 # https://github.com/khadas/fenix
 # git clone https://github.com/khadas/fenix
@@ -73,15 +75,25 @@ source env/setenv.sh -q -s  \
   INSTALL_TYPE_RAW=yes
 
 #
-# patch in PCIe source.
+# patch in kvim3_linux.dts &pcie_A.
 # https://forum.khadas.com/t/vim3-ubuntu-kernel-pcie-driver-not-load/6070/7
 # ./build/linux/arch/arm64/boot/dts/amlogic/kvim3_linux.dts
 #
-if [-f $WORK_DIR/fenix/build/linux/arch/arm64/boot/dts/amlogic/kvim3_linux.dts ]; then
-  sed -i -e '1398 s/status = "disabled"/status = "okay"/g' \
+if [ -f $WORK_DIR/fenix/build/linux/arch/arm64/boot/dts/amlogic/kvim3_linux.dts ]; then
+  sed -i -e '1398 s/status = "disabled"/status = "okay"/' \
     $WORK_DIR/fenix/build/linux/arch/arm64/boot/dts/amlogic/kvim3_linux.dts
+  echo ""
+  echo "##################################"
+  echo "Applying patch at $WORK_DIR/fenix/build/linux/arch/arm64/boot/dts/amlogic/kvim3_linux.dts"
+  echo "before running make."
+  echo "This is for enable PCIe M2."
+  echo ""
   sed -n 1396,1400p $WORK_DIR/fenix/build/linux/arch/arm64/boot/dts/amlogic/kvim3_linux.dts
+  echo ""
+  echo "##################################"
+  echo ""
 else
+  echo ""
   echo "File $WORK_DIR/fenix/build/linux/arch/arm64/boot/dts/amlogic/kvim3_linux.dts does not exit."
   echo "Program exit."
   exit
@@ -103,5 +115,6 @@ while :
       echo -n "."
     fi
   done
-
+echo ""
+echo "see image under $WORK_DIR/fenix/build/images"
 echo "fenix_amd64_native.sh script done."
