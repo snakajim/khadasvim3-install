@@ -40,7 +40,7 @@ fi
 # start script
 #
 today=`date +%F_%H_%M`
-WORK_DIR=${HOME}/work3
+WORK_DIR=${HOME}/work2
 if [ ! -d $WORK_DIR ]; then
   mkdir -p $WORK_DIR
 fi
@@ -61,7 +61,10 @@ fi
 #
 # config and run in background
 #
+#DISTRIBUTE_RELEASE=focal
 cd $WORK_DIR/fenix
+
+if [ $DISTRIBUTE_RELEASE = "focal" ]; then
 source env/setenv.sh -q -s  \
   KHADAS_BOARD=VIM3 \
   LINUX=4.9 \
@@ -73,7 +76,19 @@ source env/setenv.sh -q -s  \
   INSTALL_TYPE=EMMC \
   COMPRESS_IMAGE=no \
   INSTALL_TYPE_RAW=yes
-
+else
+source env/setenv.sh -q -s  \
+  KHADAS_BOARD=VIM3 \
+  LINUX=4.9 \
+  UBOOT=2015.01 \
+  DISTRIBUTION=Ubuntu \
+  DISTRIB_RELEASE=bionic \
+  DISTRIB_TYPE=server \
+  DISTRIB_ARCH=arm64 \
+  INSTALL_TYPE=EMMC \
+  COMPRESS_IMAGE=no \
+  INSTALL_TYPE_RAW=yes
+fi
 #
 # patch in kvim3_linux.dts &pcie_A.
 # https://forum.khadas.com/t/vim3-ubuntu-kernel-pcie-driver-not-load/6070/7
@@ -138,6 +153,7 @@ while :
   done
 echo ""
 echo "Download build image under $WORK_DIR/fenix/build/images to your host to burn."
+ls -la $WORK_DIR/fenix/build/images
 echo ""
 echo "scp ec2_amd64_focal:$WORK_DIR/fenix/build/images/VIM3_Ubuntu-server-focal_Linux-4.9_arm64_EMMC_V1.0.5-210516-develop.raw.img \ "
 echo "  ./VIM3_Ubuntu-server-focal_Linux-4.9_arm64_EMMC_V1.0.5-210516-develop.raw-pci.img"
