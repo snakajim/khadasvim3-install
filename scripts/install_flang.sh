@@ -5,7 +5,7 @@
 # $> \time -ao install_flang.log ./install_flang.sh >& install_flang.log &
 #
 
-CPU=`nproc --all`
+CPU=`getconf _NPROCESSORS_ONLN`
 
 # -----------
 # reduce MAX_SPEED down to 1.0GHz, 
@@ -21,7 +21,7 @@ if [ $MAX_SPEED -gt 1600000 ]; then
   sleep 10
   sudo reboot
 else
-  echo "MAX_SPEED is set to ${MAX_SPEED}. It is safe to proceed LLVM compile."
+  echo "MAX_SPEED is set to ${MAX_SPEED}. It is safe to proceed FLANG compile."
   echo ""
   sleep 2
 fi
@@ -48,7 +48,7 @@ fi
 CMAKE_VERSION=$(cmake --version | awk 'NR<2 { print $3 }' | awk -F. '{printf "%2d%02d%02d", $1,$2,$3}')
 if [ $CMAKE_VERSION -lt "31500" ]; then
   echo "-------------------------------------------------------------"
-  echo "Your cmake is too old to compile LLVM-12.0.0. Let's renew it."
+  echo "Your cmake is too old to compile FLANG. Let's renew it."
   echo "-------------------------------------------------------------"
   cd ${HOME}/tmp && aria2c -x10 https://github.com/Kitware/CMake/releases/download/v3.20.1/cmake-3.20.1.tar.gz
   cd ${HOME}/tmp && tar zxvf cmake-3.20.1.tar.gz
@@ -61,7 +61,6 @@ fi
 
 # ---------------------------------------
 # set flang install directory, 
-# note that ${PWD}=~/tmp/flang
 # ---------------------------------------
 #INSTALL_PREFIX=${LLVM_DIR}
 cd ${HOME}/tmp
@@ -69,7 +68,7 @@ INSTALL_PREFIX="/usr/local/flang_20210324"
 
 if [ ! -d ${INSTALL_PREFIX} ]; then 
   echo "Path \$INSTALL_PREFIX does not exist. "
-  mkdir -p ${INSTALL_PREFIX}
+  sudo mkdir -p ${INSTALL_PREFIX}
 else
   echo "clean up before installation."
   sudo rm -rf ${INSTALL_PREFIX}/*
@@ -89,30 +88,29 @@ date
 # ---------------------------------------
 # remake clang with -DLLVM_ENABLE_CLASSIC_FLANG=ON
 # ---------------------------------------
-if [[ ! -d classic-flang-llvm-project ]]; then
-    git clone -b release_100 https://github.com/flang-compiler/classic-flang-llvm-project.git
+if [ ! -d ${HOME}/tmp/classic-flang-llvm-project ]; then
+    git clone --depth 1 -b release_100 https://github.com/flang-compiler/classic-flang-llvm-project.git
 fi
 
-cd classic-flang-llvm-project
-mkdir -p build && cd build
+cd ${HOME}/tmp/classic-flang-llvm-project
+rm -rf build && mkdir -p build && cd build
 cmake -G Ninja -G "Unix Makefiles"\
   $CMAKE_OPTIONS \
   -DCMAKE_C_COMPILER=/usr/bin/gcc \
   -DCMAKE_CXX_COMPILER=/usr/bin/g++ \
   -DLLVM_ENABLE_CLASSIC_FLANG=ON \
   -DLLVM_ENABLE_PROJECTS="clang;openmp" \
-  ../llvm
-make -j$CPU
+  ../llvm && make -j$CPU
 sudo make install
 
 # ---------------------------------------
 # Config and compile runtime first
 # then
 # Confing and compile flang
-# ---------------------------------------
+# --------------------------------------
 cd ${HOME}/tmp
-if [[ ! -d flang ]]; then
-    git clone -b flang_20210324 https://github.com/flang-compiler/flang.git
+if [ ! -d flang ]; then
+    git clone --depth 1 -b flang_20210324 https://github.com/flang-compiler/flang.git
 fi
 
 (cd flang/runtime/libpgmath
@@ -132,8 +130,7 @@ $CMAKE_OPTIONS \
 -DCMAKE_CXX_COMPILER=${INSTALL_PREFIX}/bin/clang++ \
 -DCMAKE_C_COMPILER=${INSTALL_PREFIX}/bin/clang \
 -DFLANG_LLVM_EXTENSIONS=ON \
-..
-make -j$CPU
+.. && make -j$CPU
 sudo make install
 
 #
@@ -166,7 +163,9 @@ else
 fi
 date
 
-echo "install_flang.sh completed."
+echo "install_flang.sh completed. See the path & version."
+echo `which flang`
+echo `flang --version`
 date
 echo ""
 echo ""

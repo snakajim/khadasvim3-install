@@ -5,7 +5,7 @@
 # $> \time -ao install_llvm.log ./install_llvm.sh >& install_llvm.log &
 #
 
-CPU=`nproc --all`
+CPU=`getconf _NPROCESSORS_ONLN`
 
 # -----------
 # reduce MAX_SPEED down to 1.0GHz, 
@@ -47,8 +47,8 @@ else
 fi
 
 #sudo apt install -y clang
-export CXX="/usr/bin/g++-7"
-export CC="/usr/bin/gcc-7"
+export CXX="/usr/bin/g++-8"
+export CC="/usr/bin/gcc-8"
 
 # ---------------------------
 # Confirm which OS you are in 
@@ -70,9 +70,9 @@ fi
 # install LLVM 1200
 #
 mkdir -p ${HOME}/tmp
-cd ${HOME}/tmp && rm -rf llvm*
+cd ${HOME}/tmp && rm -rf llvm-project
 cd ${HOME}/tmp && git clone --depth 1 https://github.com/llvm/llvm-project.git -b llvmorg-12.0.0 && \
-  cd llvm-project && mkdir -p build && cd build
+  cd llvm-project && rm -rf build && mkdir -p build && cd build
 echo "start LLVM1200 build"
 date
 if [ $OSNOW = "UBUNTU" ] ||  [ $OSNOW = "DEBIAN" ]; then 
