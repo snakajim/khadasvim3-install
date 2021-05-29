@@ -11,8 +11,8 @@ CPU=`getconf _NPROCESSORS_ONLN`
 # reduce MAX_SPEED down to 1.0GHz, 
 # otherwize compile will stop during process.
 # -----------
-sudo apt install -y aptitude
-sudo apt install -y lm-sensors hardinfo
+sudo apt-get install -y aptitude
+sudo apt-get install -y lm-sensors hardinfo
 #watch -n 10 cat /sys/class/thermal/thermal_zone*/temp
 MAX_SPEED=`grep MAX_SPEED /etc/default/cpufrequtils | sed -e 's/MAX_SPEED=//'`
 if [ $MAX_SPEED -gt 1600000 ]; then 
@@ -46,9 +46,9 @@ else
   echo "Proceed LLVM-12.0.0 install."
 fi
 
-#sudo apt install -y clang
-export CXX="/usr/bin/g++-8"
-export CC="/usr/bin/gcc-8"
+sudo apt-get install -y clang
+export CXX="/usr/bin/clang++"
+export CC="/usr/bin/clang"
 
 # ---------------------------
 # Confirm which OS you are in 

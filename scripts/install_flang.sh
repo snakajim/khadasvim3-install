@@ -89,11 +89,12 @@ date
 # remake clang with -DLLVM_ENABLE_CLASSIC_FLANG=ON
 # ---------------------------------------
 if [ ! -d ${HOME}/tmp/classic-flang-llvm-project ]; then
+    cd ${HOME}/tmp
     git clone --depth 1 -b release_100 https://github.com/flang-compiler/classic-flang-llvm-project.git
 fi
 
 cd ${HOME}/tmp/classic-flang-llvm-project
-rm -rf build && mkdir -p build && cd build
+sudo rm -rf build && mkdir -p build && cd build
 cmake -G Ninja -G "Unix Makefiles"\
   $CMAKE_OPTIONS \
   -DCMAKE_C_COMPILER=/usr/bin/gcc \
