@@ -19,7 +19,7 @@
 # - Generate /etc/fstab.add and merge it in original /etc/fstab
 # - Reboot (or $> sudo mount -a)
 # --------------------------------------------------
-
+sudo apt -y update
 sudo apt -y install pbzip2
 
 USBD_ON=`sudo fdisk -l | grep sd | wc -l`
@@ -137,7 +137,8 @@ sleep 5
 sudo umount /mnt/var_tmp /mnt/tmp_tmp /mnt/home_tmp /mnt/usr_tmp
 
 # 5. make additional fstab
-echo "#UUID=${UUID_P1}   /var      ext4    defaults     1   1" | sudo sh -c "cat >  /etc/fstab.add"
+sudo sh -c 'echo "# change candidate, please comment out " > /etc/fstab.add'
+echo "#UUID=${UUID_P1}   /var      ext4    defaults     1   1" | sudo sh -c "cat >> /etc/fstab.add"
 echo "#UUID=${UUID_P2}   /tmp      ext4    defaults     1   1" | sudo sh -c "cat >> /etc/fstab.add"
 echo "#UUID=${UUID_P3}   /home     ext4    defaults     1   1" | sudo sh -c "cat >> /etc/fstab.add"
 echo "#UUID=${UUID_P4}   /usr      ext4    defaults     1   1" | sudo sh -c "cat >> /etc/fstab.add"

@@ -8,12 +8,12 @@
 # make sure you have set your keyboard. 
 # $> sudo dpkg-reconfigure keyboard-configuration
 #
-apt-get update -y
 iam=`echo ${USER}`
 if [ $iam != "root" ]; then
   echo "i am not root, please exec me in root."
   exit
 fi
+apt-get update -y
 
 # ---------------------------
 # Confirm which OS you are in 
