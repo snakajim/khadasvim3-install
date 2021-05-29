@@ -12,9 +12,10 @@
 # 6. Reboot 
 # --------------------------------------------------
 
-USBD_ON=`sudo fdisk -l | grep nvme | wc -l`
+USBD_ON=`sudo fdisk -l | grep sd | wc -l`
 if [${USBD_ON} -eq 0]; then
-  echo " Program exit."
+  echo "No USD storage found. Did you connect USB storage in USB port?"
+  echo "Program exit."
   sleep 10
   exit
 else
@@ -24,9 +25,22 @@ if [${USBD_ON} -gt 1]; then
   sleep 10
   exit
 else
-  USBD_ID=`sudo fdisk -l | grep nvme | sed -r 's/^.*(\/dev\/nvme\w+)(\s|:).*$/\1/'`
-  echo "you have USBD under ${USBD_ID}, format first"
-  sudo mkfs -t ext4 ${USBD_ID}
+  USBD_ID=`sudo fdisk -l | grep sd | sed -r 's/^.*(\/dev\/sd\w+)(\s|:).*$/\1/'`
+  echo "you have USBD under ${USBD_ID}, format first."
+  echo -n "This will completeley erase data under ${USBD_ID}, [y/N]: "
+  read ANS
+  case $ANS in
+    [Yy]* )
+    # ここに「Yes」の時の処理を書く
+    echo "Yes"
+    sudo mkfs -t ext4 ${USBD_ID}
+    ;;
+    * )
+    # ここに「No」の時の処理を書く
+    echo "No. Program Exit"
+    exit
+    ;;
+  esac
   sleep 5
   # please make partition in 1-4
   echo ""
@@ -111,9 +125,9 @@ else
   #sudo sed -i 's/^tmpfs/#tmpfs/' /etc/fstab
 
   # 7. Reboot to refresh changes.
-  echo "reboot in 5 sec"
-  sleep 5
-  sudo reboot
+  #echo "reboot in 5 sec"
+  #sleep 5
+  #sudo reboot
   fi
 fi
   
