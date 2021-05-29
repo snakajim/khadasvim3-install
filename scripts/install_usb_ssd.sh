@@ -1,18 +1,26 @@
 #!/bin/bash
-# This script is only tested in Aarch64 Ubuntu 20.04 LTS LK 4.9. 
+# This script is only tested in Aarch64 Ubuntu 20.04 LTS LK 4.9 Khadas VIM3 HW. 
+#
+# Synopsis:
+# Format & Mount USB-SSD drive for your linux /var,/usr,/home,/tmp
+# to extend your disk space when your boot storage is full.
+# Recommended to use USB3-NVMe M.2 SSD more than 250GByte size.
+#
 # How to run:
 # $> chmod +x * && sudo sh -c ./install_ub_ssd.sh
-
+#
 # --------------------------------------------------
 #   HOW THIS SCRIPT WORKS:
-# - Detect USB Storage, and mark it as USBD_ID
+# - Detect USB Storage, and mark it as USBD_ID.
 # - Reformat USBD_ID to ex4 and make partition into 4
-# - Format to ex4 for each new partition
+# - Format to ex4 for each new partition, then extract UUID for each.
 # - Mkdir new dirs under /mnt, then mount new partitions for each.
 # - Copy original directory to /mnt/ for each.
 # - Generate /etc/fstab.add and merge it in original /etc/fstab
-# - Reboot 
+# - Reboot (or $> sudo mount -a)
 # --------------------------------------------------
+
+sudo apt -y install pbzip2
 
 USBD_ON=`sudo fdisk -l | grep sd | wc -l`
 if [ ${USBD_ON} -eq 0 ]; then
@@ -104,20 +112,20 @@ lsblk
 df /mnt/*_tmp
 echo ""
 echo "/var copy."
-cd /var  && sudo tar vcpf - . | sudo tar xpf - -C /mnt/var_tmp
+cd /var  && sudo tar -I pbzip2 -vcpf - . | sudo tar -I pbzip2 -xpf - -C /mnt/var_tmp
 echo "/var copy done."
 sleep 5
 echo ""
 echo "/tmp copy."
-cd /tmp  && sudo tar vcpf - . | sudo tar xpf - -C /mnt/tmp_tmp
+cd /tmp  && sudo tar -I pbzip2 -vcpf - . | sudo tar -I pbzip2 -xpf - -C /mnt/tmp_tmp
 echo "/tmp copy done."
 echo ""
 echo "/home copy."
-cd /home && sudo tar vcpf - . | sudo tar xpf - -C /mnt/home_tmp
+cd /home && sudo tar -I pbzip2 -vcpf - . | sudo tar -I pbzip2 -xpf - -C /mnt/home_tmp
 echo "/home copy done."
 echo ""
 echo "/usr copy."
-cd /usr  && sudo tar vcpf - . | sudo tar xpf - -C /mnt/usr_tmp
+cd /usr  && sudo tar -I pbzip2 -vcpf - . | sudo tar -I pbzip2 -xpf - -C /mnt/usr_tmp
 echo "/usr copy done."
 sleep 5
 echo ""
