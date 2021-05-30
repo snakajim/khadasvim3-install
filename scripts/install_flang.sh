@@ -60,16 +60,9 @@ else
 fi
 
 #
-# Update gcc > 9.0
+# Update gcc > 9.0 and clang-10,11
 #
-which gcc-9
-ret=$?
-if [ $ret -eq "0" ]; then
-  echo "You have gcc-9."
-else
-  echo "You don't have gcc-9, install it."
-  sudo apt-get -y install gcc-9 g++-9
-fi
+sudo apt-get -y install gcc-9 g++-9 clang-10 clang-11
 
 # ---------------------------------------
 # set flang install directory, 
@@ -110,8 +103,8 @@ cd ${HOME}/tmp/classic-flang-llvm-project
 sudo rm -rf build && mkdir -p build && cd build
 cmake -G Ninja -G "Unix Makefiles"\
   $CMAKE_OPTIONS \
-  -DCMAKE_C_COMPILER=`which gcc-9` \
-  -DCMAKE_CXX_COMPILER=`which g++-9` \
+  -DCMAKE_C_COMPILER=`which clang-12` \
+  -DCMAKE_CXX_COMPILER=`which clang++-12` \
   -DLLVM_ENABLE_CLASSIC_FLANG=ON \
   -DLLVM_ENABLE_PROJECTS="clang;openmp" \
   ../llvm
