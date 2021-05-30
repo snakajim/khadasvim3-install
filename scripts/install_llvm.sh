@@ -70,7 +70,7 @@ else
   echo ""
 fi
 
-sudo apt-get install -y clang-10
+sudo apt-get install -y g++-8 clang-10
 export CXX=`which clang++-10`
 export CC=`which clang-10`
 sudo apt-get -y autoremove
@@ -89,6 +89,23 @@ elif [ -e "/etc/os-release" ]; then
   echo "RUN" && echo "OS $OSNOW is set"
 else
   echo "RUN" && echo "OS should be one of UBUNTU, CENTOS or DEBIAN, stop..."
+fi
+
+#
+# Update CMake > 3.15
+#
+CMAKE_VERSION=$(cmake --version | awk 'NR<2 { print $3 }' | awk -F. '{printf "%2d%02d%02d", $1,$2,$3}')
+if [ $CMAKE_VERSION -lt "31500" ]; then
+  echo "-------------------------------------------------------------"
+  echo "Your cmake is too old to compile FLANG. Let's renew it."
+  echo "-------------------------------------------------------------"
+  cd ${HOME}/tmp && aria2c -x10 https://github.com/Kitware/CMake/releases/download/v3.20.1/cmake-3.20.1.tar.gz
+  cd ${HOME}/tmp && tar zxvf cmake-3.20.1.tar.gz
+  cd ${HOME}/tmp/cmake-3.20.1 && ./bootstrap && make -j${CPU} && sudo make install
+else
+  echo "-------------------------------------------------------------"
+  echo "cmake is already the new version."
+  echo "-------------------------------------------------------------"
 fi
 
 #
