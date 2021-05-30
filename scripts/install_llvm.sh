@@ -11,19 +11,26 @@ CPU=`getconf _NPROCESSORS_ONLN`
 # reduce MAX_SPEED down to 1.0GHz, 
 # otherwize compile will stop during process.
 # -----------
-sudo apt-get install -y aptitude
-sudo apt-get install -y lm-sensors hardinfo
-#watch -n 10 cat /sys/class/thermal/thermal_zone*/temp
-MAX_SPEED=`grep MAX_SPEED /etc/default/cpufrequtils | sed -e 's/MAX_SPEED=//'`
-if [ $MAX_SPEED -gt 1600000 ]; then 
-  sudo perl -pi -e 's/MAX_SPEED=\d+/MAX_SPEED=1400000/' /etc/default/cpufrequtils
-  echo "/etc/default/cpufrequtils MAX_SPEED is changed, reboot in 10sec"
-  sleep 10
-  sudo reboot
+hostname | grep -i Khadas
+ret=$?
+if [ $ret -eq "0" ]; then
+  echo "Host HW is Khadas."
+  sudo apt-get install -y aptitude
+  sudo apt-get install -y lm-sensors hardinfo
+  #watch -n 10 cat /sys/class/thermal/thermal_zone*/temp
+  MAX_SPEED=`grep MAX_SPEED /etc/default/cpufrequtils | sed -e 's/MAX_SPEED=//'`
+  if [ $MAX_SPEED -gt 1600000 ]; then 
+    sudo perl -pi -e 's/MAX_SPEED=\d+/MAX_SPEED=1400000/' /etc/default/cpufrequtils
+    echo "/etc/default/cpufrequtils MAX_SPEED is changed, reboot in 10sec"
+    sleep 10
+    sudo reboot
+  else
+    echo "MAX_SPEED is set to ${MAX_SPEED}. It is safe to proceed LLVM compile."
+    echo ""
+    sleep 2
+  fi
 else
-  echo "MAX_SPEED is set to ${MAX_SPEED}. It is safe to proceed LLVM compile."
-  echo ""
-  sleep 2
+  echo "Host HW is not Khadas."
 fi
 
 # ------------------------
@@ -31,24 +38,33 @@ fi
 # ------------------------
 which clang
 ret=$?
-if [ $ret -eq 0 ]; then
+if [ $ret -eq "0" ]; then
   CLANG_VERSION=$(clang --version | awk 'NR<2 { print $3 }' | awk -F. '{printf "%2d%02d%02d", $1,$2,$3}')
   if [ $CLANG_VERSION -eq "120000" ]; then
+    echo "#-------------------------------------------------------------"
     echo "You have already had LLVM-12.0.0."
     echo "Skip installation. Program exit."
+    echo "#-------------------------------------------------------------"
     exit
   else
+    echo "#-------------------------------------------------------------"
     echo "You have already had LLVM clang but it is not target version=$CLANG_VERSION."
     echo "Proceed LLVM-12.0.0 install."
+    echo "#-------------------------------------------------------------"
+    echo ""
   fi
 else
+  echo "#-------------------------------------------------------------"
   echo "LLVM-clang is not found in your system."
   echo "Proceed LLVM-12.0.0 install."
+  echo "#-------------------------------------------------------------"
+  echo ""
 fi
 
 sudo apt-get install -y clang
-export CXX="/usr/bin/clang++"
-export CC="/usr/bin/clang"
+export CXX=`which clang++`
+export CC=`which clang`
+sudo apt-get -y autoremove
 
 # ---------------------------
 # Confirm which OS you are in 
@@ -83,7 +99,10 @@ if [ $OSNOW = "UBUNTU" ] ||  [ $OSNOW = "DEBIAN" ]; then
     -DCMAKE_BUILD_TYPE=RELEASE \
     -DLLVM_TARGETS_TO_BUILD="ARM;AArch64" \
     -DCMAKE_INSTALL_PREFIX="/usr/local/llvm_1200" \
-    ../llvm && make -j${CPU} && sudo make install
+    ../llvm
+    make -j${CPU} && sudo make install
+    make clean
+  echo "end LLVM1200 build"  
 elif [ $OSNOW = "CENTOS" ]; then
   cmake -G Ninja -G "Unix Makefiles" \
     -DCMAKE_C_COMPILER=$CC \
@@ -92,20 +111,26 @@ elif [ $OSNOW = "CENTOS" ]; then
     -DCMAKE_BUILD_TYPE=RELEASE \
     -DLLVM_TARGETS_TO_BUILD="ARM;AArch64" \
     -DCMAKE_INSTALL_PREFIX="/usr/local/llvm_1200" \
-    ../llvm && make -j${CPU} && sudo make install
+    ../llvm
+    make -j${CPU} && sudo make install
+    make clean
+  echo "end LLVM1200 build"    
 else
   echo "please set right choise in OS=$OSNOW.."
+  echo "Program exit"
+  exit
 fi
-echo "end LLVM1200 build"
+
 date
-make clean
 
 #
 # post install processing
 #
+echo ""
+echo "Start post install processing."
 grep LLVM_DIR ${HOME}/.bashrc
 ret=$?
-if [ $ret -eq 1 ] && [ -d /usr/local/llvm_1200/bin ]; then
+if [ $ret -eq "1" ] && [ -d /usr/local/llvm_1200/bin ]; then
   echo "Updating ${HOME}/.bashrc"
   echo "# " >> ${HOME}/.bashrc
   echo "# LLVM setting for binary and LD_ & LIBRARY_PATH" >> ${HOME}/.bashrc

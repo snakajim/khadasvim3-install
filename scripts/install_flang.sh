@@ -59,6 +59,18 @@ else
   echo "-------------------------------------------------------------"
 fi
 
+#
+# Update gcc > 9.0
+#
+which gcc-9
+ret=$?
+if [ $ret -eq "0" ]; then
+  echo "You have gcc-9."
+else
+  echo "You don't have gcc-9, install it."
+  sudo apt-get -y install gcc-9 g++-9
+fi
+
 # ---------------------------------------
 # set flang install directory, 
 # ---------------------------------------
@@ -92,17 +104,20 @@ if [ ! -d ${HOME}/tmp/classic-flang-llvm-project ]; then
     cd ${HOME}/tmp
     git clone --depth 1 -b release_100 https://github.com/flang-compiler/classic-flang-llvm-project.git
 fi
-
+echo "#-------------------------------------------------------------"
+echo "classic-flang-llvm-project build starts."
 cd ${HOME}/tmp/classic-flang-llvm-project
 sudo rm -rf build && mkdir -p build && cd build
 cmake -G Ninja -G "Unix Makefiles"\
   $CMAKE_OPTIONS \
-  -DCMAKE_C_COMPILER=/usr/bin/gcc \
-  -DCMAKE_CXX_COMPILER=/usr/bin/g++ \
+  -DCMAKE_C_COMPILER=`which gcc-9` \
+  -DCMAKE_CXX_COMPILER=`which g++-9` \
   -DLLVM_ENABLE_CLASSIC_FLANG=ON \
   -DLLVM_ENABLE_PROJECTS="clang;openmp" \
-  ../llvm && make -j$CPU
-sudo make install
+  ../llvm
+make -j$CPU && sudo make install
+echo "classic-flang-llvm-project is successfully done."
+echo "#-------------------------------------------------------------"
 
 # ---------------------------------------
 # Config and compile runtime first
@@ -122,8 +137,11 @@ fi
  -DCMAKE_C_COMPILER=${INSTALL_PREFIX}/bin/clang \
  ..
  make -j$CPU
- sudo make install)
+ sudo make install
+ echo "libpgmath is successfully done")
 
+echo "#-------------------------------------------------------------"
+echo "flang build starts."
 cd flang
 mkdir -p build && cd build
 cmake -G Ninja -G "Unix Makefiles" \
@@ -131,12 +149,17 @@ $CMAKE_OPTIONS \
 -DCMAKE_CXX_COMPILER=${INSTALL_PREFIX}/bin/clang++ \
 -DCMAKE_C_COMPILER=${INSTALL_PREFIX}/bin/clang \
 -DFLANG_LLVM_EXTENSIONS=ON \
-.. && make -j$CPU
-sudo make install
+..
+make -j$CPU && sudo make install
+echo "flang is successfully done"
+echo "#-------------------------------------------------------------"
 
 #
 # post install processing
 #
+echo ""
+echo "#-------------------------------------------------------------"
+echo "post install processing."
 grep FLANG_DIR ${HOME}/.bashrc
 ret=$?
 if [ $ret -eq 1 ] && [ -d ${INSTALL_PREFIX} ]; then
