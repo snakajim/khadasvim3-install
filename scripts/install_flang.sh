@@ -76,9 +76,11 @@ else
 fi
 
 #
-# Update gcc > 9.0 and clang-10,11
+# Update gcc > 8.0
+# Ubuntu bionic supports up to gcc10.
 #
-sudo apt-get -y install gcc-9 g++-9 clang-10 clang-11
+sudo apt-get -y install g++-8
+sudo apt-get -y autoremove
 
 # ---------------------------------------
 # set flang install directory, 
@@ -119,12 +121,13 @@ cd ${HOME}/tmp/classic-flang-llvm-project
 sudo rm -rf build && mkdir -p build && cd build
 cmake -G Ninja -G "Unix Makefiles"\
   $CMAKE_OPTIONS \
-  -DCMAKE_C_COMPILER=`which clang-10` \
-  -DCMAKE_CXX_COMPILER=`which clang++-10` \
+  -DCMAKE_C_COMPILER=`which gcc-8` \
+  -DCMAKE_CXX_COMPILER=`which g++-8` \
   -DLLVM_ENABLE_CLASSIC_FLANG=ON \
   -DLLVM_ENABLE_PROJECTS="clang;openmp" \
   ../llvm
 make -j$CPU && sudo make install
+make clean
 echo "classic-flang-llvm-project is successfully done."
 echo "#-------------------------------------------------------------"
 
@@ -147,6 +150,7 @@ fi
  ..
  make -j$CPU
  sudo make install
+ make clean
  echo "libpgmath is successfully done")
 
 echo "#-------------------------------------------------------------"
@@ -160,6 +164,7 @@ $CMAKE_OPTIONS \
 -DFLANG_LLVM_EXTENSIONS=ON \
 ..
 make -j$CPU && sudo make install
+make clean
 echo "flang is successfully done"
 echo "#-------------------------------------------------------------"
 
