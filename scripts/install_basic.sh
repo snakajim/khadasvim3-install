@@ -44,6 +44,8 @@ apt-get install -y avahi-daemon avahi-utils
 apt-get install -y scons libomp-dev evince time hwinfo
 apt-get install -y gcc-7 g++-7
 apt-get install -y gcc-8 g++-8
+apt-get install -y gcc-9 g++-9
+apt-get install -y clang-10 clang-11
 
 #gpasswd -a $USER docker
 #chmod 666 /var/run/docker.sock

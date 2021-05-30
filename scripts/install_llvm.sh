@@ -138,6 +138,7 @@ if [ $ret -eq "1" ] && [ -d /usr/local/llvm_1200/bin ]; then
   echo "export PATH=\$LLVM_DIR/bin:\$PATH" >>  ${HOME}/.bashrc
   echo "export LIBRARY_PATH=\$LLVM_DIR/lib:\$LIBRARY_PATH" >>  ${HOME}/.bashrc
   echo "export LD_LIBRARY_PATH=\$LLVM_DIR/lib:\$LD_LIBRARY_PATH" >>  ${HOME}/.bashrc
+  sudo ln -sf /usr/local/llvm_1200/bin/clang++ /usr/local/llvm_1200/bin/clang++-12 
 fi
 
 if [ -f /usr/local/llvm_1200/bin/lld ]; then
