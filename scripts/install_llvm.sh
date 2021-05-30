@@ -20,6 +20,7 @@ fi
 # reduce MAX_SPEED down to 1.0GHz, 
 # otherwize compile will stop during process.
 # -----------
+mkdir -p ${HOME}/tmp
 hostname | grep -i Khadas
 ret=$?
 if [ $ret -eq "0" ]; then

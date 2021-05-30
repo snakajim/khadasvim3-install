@@ -8,7 +8,7 @@
 #
 SWAPABLE=`df -h / | grep -e "\/" | awk '{ print $4 }' | sed "s/G//"`
 
-if [ $SWAPABLE -ge "20" ]; then
+if [ $SWAPABLE -ge "16" ] && [ ! -f /swapfile ]; then
   sudo swapon -show | grep swapfile
   ret=$?
   if [ $ret -eq "0" ]; then
@@ -19,7 +19,8 @@ if [ $SWAPABLE -ge "20" ]; then
   fi
   echo "Make 4GByte SWAP under /dev/rootfs."
 else
-  echo "Not enough space left for SWAP under /dev/rootfs."
+  echo "Not enough space left for SWAP under /, or,"
+  echo "/swapfile is already existing."
   echo "Program exit."
   sleep 10
   exit 
@@ -49,7 +50,7 @@ fi
 
 grep swapfile /etc/fstab
 ret=$?
-if [ $? -eq "1" ]; then
+if [ $ret -eq "1" ]; then
   sudo sh -c \
     "cat /etc/fstab.swap >> /etc/fstab"
   echo "To perpetualize your /swapfile, please update /etc/fstab."
