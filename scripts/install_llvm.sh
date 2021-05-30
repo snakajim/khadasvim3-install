@@ -61,9 +61,9 @@ else
   echo ""
 fi
 
-sudo apt-get install -y clang
-export CXX=`which clang++`
-export CC=`which clang`
+sudo apt-get install -y clang-10
+export CXX=`which clang++-10`
+export CC=`which clang-10`
 sudo apt-get -y autoremove
 
 # ---------------------------
@@ -121,8 +121,6 @@ else
   exit
 fi
 
-date
-
 #
 # post install processing
 #
@@ -162,7 +160,6 @@ if [ $CLANG_VERSION -eq "120000" ]; then
   echo "Conguraturations."
   echo "LLVM compile & install done."
   date
-  exit
 else
   echo "ERROR: Some issues. LLVM-12.00 was not successfully built."
   echo "ERROR: Please check build log. Program exit"

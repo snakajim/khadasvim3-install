@@ -11,19 +11,26 @@ CPU=`getconf _NPROCESSORS_ONLN`
 # reduce MAX_SPEED down to 1.0GHz, 
 # otherwize compile will stop during process.
 # -----------
-sudo apt install -y aptitude
-sudo apt install -y lm-sensors hardinfo
-#watch -n 10 cat /sys/class/thermal/thermal_zone*/temp
-MAX_SPEED=`grep MAX_SPEED /etc/default/cpufrequtils | sed -e 's/MAX_SPEED=//'`
-if [ $MAX_SPEED -gt 1600000 ]; then 
-  sudo perl -pi -e 's/MAX_SPEED=\d+/MAX_SPEED=1400000/' /etc/default/cpufrequtils
-  echo "/etc/default/cpufrequtils MAX_SPEED is changed, reboot in 10sec"
-  sleep 10
-  sudo reboot
+hostname | grep -i Khadas
+ret=$?
+if [ $ret -eq "0" ]; then
+  echo "Host HW is Khadas."
+  sudo apt-get install -y aptitude
+  sudo apt-get install -y lm-sensors hardinfo
+  #watch -n 10 cat /sys/class/thermal/thermal_zone*/temp
+  MAX_SPEED=`grep MAX_SPEED /etc/default/cpufrequtils | sed -e 's/MAX_SPEED=//'`
+  if [ $MAX_SPEED -gt 1600000 ]; then 
+    sudo perl -pi -e 's/MAX_SPEED=\d+/MAX_SPEED=1400000/' /etc/default/cpufrequtils
+    echo "/etc/default/cpufrequtils MAX_SPEED is changed, reboot in 10sec"
+    sleep 10
+    sudo reboot
+  else
+    echo "MAX_SPEED is set to ${MAX_SPEED}. It is safe to proceed LLVM compile."
+    echo ""
+    sleep 2
+  fi
 else
-  echo "MAX_SPEED is set to ${MAX_SPEED}. It is safe to proceed FLANG compile."
-  echo ""
-  sleep 2
+  echo "Host HW is not Khadas."
 fi
 
 # ---------------------------
@@ -103,8 +110,8 @@ cd ${HOME}/tmp/classic-flang-llvm-project
 sudo rm -rf build && mkdir -p build && cd build
 cmake -G Ninja -G "Unix Makefiles"\
   $CMAKE_OPTIONS \
-  -DCMAKE_C_COMPILER=`which clang-12` \
-  -DCMAKE_CXX_COMPILER=`which clang++-12` \
+  -DCMAKE_C_COMPILER=`which clang-10` \
+  -DCMAKE_CXX_COMPILER=`which clang++-10` \
   -DLLVM_ENABLE_CLASSIC_FLANG=ON \
   -DLLVM_ENABLE_PROJECTS="clang;openmp" \
   ../llvm
