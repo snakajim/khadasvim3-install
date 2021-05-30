@@ -3,6 +3,8 @@ Khadas VIM3 Pro setup procedure.
 
 # khadas vim3 pro performance overview
 
+To build flang, adding +4GByte swapfile.
+
 |  behchmark in usertime(m) |  Khadas VIM3 Pro(*) | EC2 T4G medium |
 | --------------------------| ------------------- | -------------- |
 |  clang-12.0.0 buuild & install  |  TD           | 185.0          |

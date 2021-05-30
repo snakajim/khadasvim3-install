@@ -164,7 +164,8 @@ $CMAKE_OPTIONS \
 -DCMAKE_C_COMPILER=${INSTALL_PREFIX}/bin/clang \
 -DFLANG_LLVM_EXTENSIONS=ON \
 ..
-make -j$CPU && sudo make install
+make -j$CPU
+sudo make install
 make clean
 echo "flang is successfully done"
 echo "#-------------------------------------------------------------"
