@@ -7,6 +7,15 @@
 
 CPU=`getconf _NPROCESSORS_ONLN`
 
+MEMSIZE=`cat /proc/meminfo  | grep MemTotal | awk '{ print $2 }'`
+if [ $MEMSIZE -lt "5963000" ]; then
+  echo "------------------WARNING--------------------"
+  echo "$MEMSIZE(byte) is detected in your memory."
+  echo "You need more than 6GByte to build flang."
+  echo "Build process may fail during compilation."
+  echo "---------------------------------------------"
+fi
+
 # -----------
 # reduce MAX_SPEED down to 1.0GHz, 
 # otherwize compile will stop during process.
@@ -95,7 +104,7 @@ CMAKE_OPTIONS="-DCMAKE_INSTALL_PREFIX=${INSTALL_PREFIX} \
     -DCMAKE_Fortran_COMPILER_ID=Flang \
     -DLLVM_TARGETS_TO_BUILD=AArch64" 
 
-date
+echo `date`
 
 # ---------------------------------------
 # remake clang with -DLLVM_ENABLE_CLASSIC_FLANG=ON
@@ -185,12 +194,13 @@ else
   echo "flag installation is fail. Check logs."
   echo ""
 fi
-date
+
+source ${HOME}/.bashrc
 
 echo "install_flang.sh completed. See the path & version."
 echo `which flang`
 echo `flang --version`
-date
+echo `date`
 echo ""
 echo ""
 echo ""

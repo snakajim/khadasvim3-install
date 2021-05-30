@@ -7,6 +7,15 @@
 
 CPU=`getconf _NPROCESSORS_ONLN`
 
+MEMSIZE=`cat /proc/meminfo  | grep MemTotal | awk '{ print $2 }'`
+if [ $MEMSIZE -lt "3964000" ]; then
+  echo "------------------WARNING--------------------"
+  echo "$MEMSIZE(byte) is detected in your memory."
+  echo "You need more than 4GByte to build clang."
+  echo "Build process may fail during compilation."
+  echo "---------------------------------------------"
+fi
+
 # -----------
 # reduce MAX_SPEED down to 1.0GHz, 
 # otherwize compile will stop during process.
@@ -90,7 +99,7 @@ cd ${HOME}/tmp && rm -rf llvm-project
 cd ${HOME}/tmp && git clone --depth 1 https://github.com/llvm/llvm-project.git -b llvmorg-12.0.0 && \
   cd llvm-project && rm -rf build && mkdir -p build && cd build
 echo "start LLVM1200 build"
-date
+echo `date`
 if [ $OSNOW = "UBUNTU" ] ||  [ $OSNOW = "DEBIAN" ]; then 
   cmake -G Ninja -G "Unix Makefiles"\
     -DCMAKE_C_COMPILER=$CC \
@@ -151,18 +160,17 @@ fi
 
 # ------------------------------------------------------
 # Refresh your shell and check your clang version again
-# ------------------------------------------------------
-exec $SHELL -l
+source ${HOME}/.bashrc
 sudo ldconfig -v
 CLANG_VERSION=$(/usr/local/llvm_1200/bin/clang --version | awk 'NR<2 { print $3 }' | awk -F. '{printf "%2d%02d%02d", $1,$2,$3}')
 if [ $CLANG_VERSION -eq "120000" ]; then
   echo "You have LLVM-12.0.0 under /usr/local/llvm_1200/."
   echo "Conguraturations."
   echo "LLVM compile & install done."
-  date
+  echo `date`
 else
   echo "ERROR: Some issues. LLVM-12.00 was not successfully built."
-  echo "ERROR: Please check build log. Program exit"
-  date
+  echo "ERROR: Please check build log."
+  echo `date`
   exit
 fi
