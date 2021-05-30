@@ -1,6 +1,14 @@
 # khadasvim3-install
 Khadas VIM3 Pro setup procedure.
 
+# khadas vim3 pro performance overview
+
+|  behchmark in usertime(m) |  Khadas VIM3 Pro(*) | EC2 T4G medium |
+| --------------------------| ------------------- | -------------- |
+|  clang-12.0.0 buuild & install  |  TD           | 185.0          |
+|  flang_20210324 build & install |  TD           | TD             |
+
+(*) Reducing CPU FREQ=1.4GHz to avoid thermal issue
 
 # Running x86 docker on aarch64 linux
 
