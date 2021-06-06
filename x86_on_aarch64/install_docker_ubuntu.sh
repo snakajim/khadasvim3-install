@@ -39,6 +39,7 @@ sudo usermod -aG docker $USER
 sudo chmod 666 /var/run/docker.sock
 sudo systemctl enable docker
 sudo systemctl start docker
+sudo mount -n -o remount,suid /var/lib/docker
 
 # clean up all local images and hello world
 docker images -aq | xargs docker rmi
@@ -116,21 +117,5 @@ docker run --rm -t multiarch/ubuntu-core:amd64-bionic uname -m
 sleep 10
 docker run --rm -t multiarch/ubuntu-core:arm64-bionic uname -m
 sleep 10
-
-
-# -------------------------------------
-# build x86_64 docker container on aarch64 linux 
-# -------------------------------------
-docker system prune -f
-sudo apt install subversion -y
-if [ -d ${HOME}/work/tensorflow-lite-micro-rtos-fvp ]; then
-  echo "tensorflow-lite-micro-rtos-fvp already exists."
-else
-  cd ${HOME}/work && svn export  https://github.com/ARM-software/Tool-Solutions/trunk/docker/tensorflow-lite-micro-rtos-fvp
-fi
-# use Ubuntu 16.04 LTS(xenial) if you face libc-bin issue
-sed -i 's/FROM ubuntu:18.04/FROM multiarch\/ubuntu-core:amd64-bionic/' ${HOME}/work/tensorflow-lite-micro-rtos-fvp/docker/*.Dockerfile
-sed -i 's/apt-get -y update/apt-get -y update \&\& apt-get install -y software-properties-common/' ${HOME}/work/tensorflow-lite-micro-rtos-fvp/docker/*.Dockerfile 
-chmod +x -R ${HOME}/work/tensorflow-lite-micro-rtos-fvp/*
-cd ${HOME}/work/tensorflow-lite-micro-rtos-fvp && ./docker_build.sh -c gcc
-
+echo "Docker install completed. Reboot in 10 sec."
+sudo reboot
